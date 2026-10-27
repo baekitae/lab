@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>패턴랩 v1.3 | 통합 주식 관리·예측 검증</title>
+<style>
+:root{--green:#185C4B;--green-soft:#E9F2EE;--bg:#F4F7F5;--surface:#FFFFFF;--soft:#F7FAF8;--ink:#172824;--muted:#687C75;--border:#DDE7E1;--up:#16805D;--down:#C45C50;--amber:#A77B2A;--shadow:0 10px 28px rgba(25,63,49,.06)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,Pretendard,"Noto Sans KR",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}#app{min-height:100vh}.shell{max-width:1450px;margin:0 auto;padding:22px 24px 54px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}.brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;display:grid;place-items:center;border-radius:14px;background:var(--green);color:white;font-size:21px;font-weight:900}.brand-title{font-weight:900;font-size:20px;letter-spacing:-.04em}.brand-sub{font-size:11px;color:var(--muted);margin-top:3px}.header-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.pill{border:1px solid var(--border);border-radius:999px;background:white;color:var(--muted);padding:7px 10px;font-size:11px;font-weight:750}.pill.green{background:var(--green-soft);color:var(--green);border-color:transparent}.btn{border:1px solid var(--border);border-radius:10px;background:white;color:var(--ink);padding:10px 13px;font-size:12px;font-weight:800;transition:transform .12s}.btn:hover{transform:translateY(-1px)}.btn.primary{background:var(--green);border-color:var(--green);color:white}.btn.soft{background:var(--green-soft);border-color:transparent;color:var(--green)}.btn.danger{color:var(--down);border-color:#efd5d1;background:#fff8f7}.btn.small{padding:7px 9px;font-size:10px;border-radius:8px}.hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(270px,.65fr);gap:16px;margin-bottom:18px}.hero-main{position:relative;overflow:hidden;background:var(--green);color:white;padding:26px 28px;border-radius:22px;min-height:180px}.eyebrow{font-size:10px;letter-spacing:.13em;font-weight:850;opacity:.72;margin-bottom:11px}.hero-main h1{font-size:27px;line-height:1.24;letter-spacing:-.045em;margin:0 0 10px}.hero-main p{color:#DBEAE4;font-size:12px;line-height:1.7;max-width:680px;margin:0}.hero-main:after{content:"";position:absolute;width:300px;height:300px;border:1px solid #ffffff25;border-radius:50%;right:-100px;top:-150px;box-shadow:0 0 0 35px #ffffff0b,0 0 0 75px #ffffff07;pointer-events:none}.hero-side,.panel,.metric{background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow)}.hero-side{padding:19px 21px;display:flex;flex-direction:column;justify-content:space-between;gap:12px}.hero-side h3{margin:0;font-size:13px}.hero-side p{font-size:11px;color:var(--muted);line-height:1.65;margin:6px 0 0}.workflow{display:flex;gap:6px;flex-wrap:wrap}.workflow span{font-size:10px;border:1px solid var(--border);background:var(--soft);padding:7px 9px;border-radius:8px;color:var(--muted)}.section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:22px 0 12px}.section-heading h2{font-size:17px;letter-spacing:-.03em;margin:0}.section-heading p{font-size:11px;color:var(--muted);margin:5px 0 0}.kicker{font-size:9px;color:var(--muted);letter-spacing:.13em;font-weight:900;margin-bottom:5px}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-bottom:17px}.metric{padding:15px 16px;min-width:0}.metric-label{font-size:10px;color:var(--muted);font-weight:800}.metric-value{font-size:22px;font-weight:900;letter-spacing:-.04em;margin:9px 0 4px;overflow-wrap:anywhere}.metric-note{font-size:10px;color:var(--muted);line-height:1.5}.tabs-bar{display:flex;gap:7px;align-items:center;flex-wrap:nowrap;overflow-x:auto;padding:0 0 10px;margin:8px 0 5px;scrollbar-width:thin}.tab{display:inline-flex;align-items:center;gap:8px;flex:0 0 auto;border:1px solid var(--border);background:#fff;color:var(--muted);padding:10px 13px;border-radius:11px;font-size:11px;font-weight:850;white-space:nowrap}.tab.active{background:var(--green);border-color:var(--green);color:white}.tab .tab-dot{width:7px;height:7px;border-radius:50%;background:#a5b9af}.tab.active .tab-dot{background:#b6e4d0}.tab-add{border-style:dashed;color:var(--green)}.panel{padding:18px;min-width:0}.panel-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.panel-title h3{font-size:13px;margin:0;letter-spacing:-.025em}.panel-title small,.muted{font-size:10px;color:var(--muted)}.dashboard-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}.table-wrap{overflow:auto;border:1px solid var(--border);border-radius:12px}table{border-collapse:collapse;width:100%;min-width:760px;font-size:11px}th{background:var(--soft);color:var(--muted);text-align:right;font-size:10px;font-weight:850;padding:12px 11px;white-space:nowrap}td{padding:12px 11px;text-align:right;border-top:1px solid var(--border);white-space:nowrap}th:first-child,td:first-child{text-align:left}tbody tr:first-child td{border-top:0}.stock-link{color:var(--green);font-weight:900;border:0;background:transparent;padding:0;text-align:left}.stock-meta{display:block;font-size:10px;color:var(--muted);margin-top:3px}.positive{color:var(--up)!important;font-weight:850}.negative{color:var(--down)!important;font-weight:850}.neutral{color:var(--muted)}.empty{text-align:center;padding:27px 14px;color:var(--muted);font-size:11px;line-height:1.75}.empty strong{display:block;color:var(--ink);margin-bottom:5px;font-size:12px}.stock-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;flex-wrap:wrap;margin-bottom:14px}.stock-title{display:flex;align-items:center;gap:10px}.ticker-box{width:45px;height:45px;background:var(--green-soft);color:var(--green);border-radius:13px;display:grid;place-items:center;font-weight:950;font-size:11px}.stock-title h2{font-size:20px;letter-spacing:-.04em;margin:0}.stock-title p{margin:4px 0 0;color:var(--muted);font-size:11px}.price-box{text-align:right;min-width:170px}.current-price{font-size:26px;font-weight:950;letter-spacing:-.05em}.price-note{font-size:10px;color:var(--muted);margin-top:5px}.position-metrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;margin-bottom:15px}.position-metric{background:var(--soft);border:1px solid var(--border);border-radius:12px;padding:12px;min-width:0}.position-metric span{display:block;color:var(--muted);font-size:10px;margin-bottom:7px}.position-metric strong{font-size:16px;letter-spacing:-.025em;overflow-wrap:anywhere}.position-metric small{display:block;color:var(--muted);font-size:9px;margin-top:4px}.detail-grid{display:grid;grid-template-columns:minmax(280px,.78fr) minmax(0,1.22fr);gap:13px;align-items:start}.field{margin-bottom:12px;min-width:0}.field label{display:block;font-size:10px;font-weight:850;margin-bottom:6px}.field input,.field select,.field textarea,.input{width:100%;min-width:0;border:1px solid var(--border);background:white;color:var(--ink);border-radius:9px;padding:10px 11px;font-size:12px;outline:none}.field textarea{resize:vertical;min-height:64px}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px #185c4b14}.field-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.helper{font-size:10px;line-height:1.65;color:var(--muted)}.form-actions{display:flex;gap:8px;flex-wrap:wrap}.status{padding:9px 11px;border-radius:10px;background:var(--soft);border:1px solid var(--border);color:var(--muted);font-size:10px;line-height:1.6;margin-top:10px}.status.error{background:#fff4f2;color:var(--down);border-color:#efd5d1}.status.ok{background:#eff8f3;color:var(--up);border-color:#d7eee1}.subsection{margin-top:18px}.subsection h4{font-size:12px;margin:0}.subsection-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}.badge{display:inline-block;border:1px solid var(--border);border-radius:999px;padding:4px 7px;font-size:9px;font-weight:850;color:var(--muted);background:var(--soft)}.badge.done{background:#e9f6ef;color:var(--up);border-color:transparent}.badge.pending{background:#fbf4e4;color:var(--amber);border-color:transparent}.badge.comment-good{background:#e9f6ef;color:var(--up);border-color:transparent}.badge.comment-caution{background:#fff4f2;color:var(--down);border-color:transparent}.badge.comment-neutral{background:#fbf4e4;color:var(--amber);border-color:transparent}.metric-head{display:flex;align-items:center;gap:6px;justify-content:space-between}.metric-head .label-wrap{display:flex;align-items:center;gap:6px;min-width:0}.tip-btn{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:999px;border:1px solid var(--border);background:#fff;color:var(--muted);font-size:10px;font-weight:900;cursor:help;line-height:1;padding:0}.guide-toggle{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.guide-toggle .btn{padding:7px 10px;font-size:10px}.backtest-guide-section{margin-top:10px}.backtest-guide-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:10px}.backtest-auto-comments{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.trade-table{min-width:700px}.trade-table td,.trade-table th{padding:10px} .trade-entry-tabs{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 13px}.entry-tab{border:1px solid var(--border);background:var(--soft);color:var(--muted);padding:9px 12px;border-radius:9px;font-size:11px;font-weight:850}.entry-tab.active{background:var(--green);border-color:var(--green);color:white}.trade-import-help{font-size:10px;line-height:1.7;color:var(--muted);margin:0 0 12px}.trade-import-table{min-width:650px}.trade-import-table td,.trade-import-table th{padding:8px 9px}.trade-import-status{font-size:10px;font-weight:800;white-space:normal;min-width:100px}.trade-import-status.good{color:var(--up)}.trade-import-status.bad{color:var(--down)}.trade-import-status.skip{color:var(--amber)}.forecast-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}.forecast{border:1px solid var(--border);border-radius:11px;padding:11px;background:white}.forecast span{display:block;font-size:10px;color:var(--muted);font-weight:800}.forecast strong{display:block;font-size:20px;margin:6px 0}.forecast-bar{height:5px;background:var(--soft);border-radius:99px;overflow:hidden}.forecast-bar i{display:block;height:100%;border-radius:99px;background:var(--green)}.forecast.up strong{color:var(--up)}.forecast.down strong{color:var(--down)}.forecast.flat strong{color:var(--amber)}.chart-wrap{border:1px solid var(--border);border-radius:12px;background:var(--soft);padding:10px;overflow:hidden}.chart-wrap svg{display:block;width:100%;height:170px}.chart-foot{display:flex;justify-content:space-between;gap:10px;font-size:9px;color:var(--muted);padding:4px 3px 0}.api-panel{display:none;margin:10px 0 18px}.api-panel.open{display:block}.api-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:10px;align-items:end}.security-note{background:var(--soft);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:10px;line-height:1.65;color:var(--muted);margin-top:10px}.footer{border-top:1px solid var(--border);margin-top:24px;padding-top:15px;color:var(--muted);font-size:10px;line-height:1.7;display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}.modal-shade{position:fixed;inset:0;z-index:30;background:#0a191580;display:none;align-items:center;justify-content:center;padding:18px}.modal-shade.open{display:flex}.modal{width:min(550px,100%);background:white;border:1px solid var(--border);border-radius:18px;box-shadow:0 24px 80px #0003;padding:21px}.modal h3{font-size:16px;margin:0 0 14px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:15px}.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,18px);opacity:0;pointer-events:none;transition:all .2s;z-index:60;max-width:calc(100vw - 30px);background:#173d33;color:white;padding:12px 16px;border-radius:11px;font-size:12px;box-shadow:0 8px 25px #0002}.toast.show{transform:translate(-50%,0);opacity:1}.hidden{display:none!important}
+@media(max-width:1000px){.hero{grid-template-columns:1fr}.position-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.detail-grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.shell{padding:15px 12px 35px}.topbar{align-items:flex-start}.brand-title{font-size:17px}.header-actions .pill{display:none}.hero-main{padding:21px}.hero-main h1{font-size:24px}.panel{padding:14px}.position-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.field-row,.api-grid{grid-template-columns:1fr}.price-box{text-align:left}.stock-head{flex-direction:column}.forecast-grid{gap:5px}.forecast{padding:8px}.forecast strong{font-size:17px}.section-heading{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<div id="app"><div class="shell">
+<header class="topbar"><div class="brand"><div class="logo">P</div><div><div class="brand-title">패턴랩 <span style="font-weight:500;color:var(--muted)">/ PATTERN LAB</span></div><div class="brand-sub">국내 · 해외 통합 포트폴리오 & 예측 검증</div></div></div><div class="header-actions"><a class="btn primary" href="/app">통합 홈 · 연결 설정</a><a class="btn soft" href="/ai">AI 팀 리그 · Gemini</a><a class="btn" href="/league">기준 전략 연구실</a><span class="pill" title="이 표시가 없다면 이전 서버가 실행 중입니다">백테스트 해석 표시판 · 2026-10-23</span><span class="pill" style="background:#e0f4ee;color:#125a48;font-weight:900">★ v1.3.5 RC1 · 거래 회차·예측 검증 · 8770</span><span class="pill green" id="dataModeBadge">● 로컬 기록</span><span class="pill" id="apiBadge">시세 API 연결 확인 중</span><button class="btn" id="toggleApiBtn">API 설정</button><button class="btn" id="exportAllBtn">전체 백업</button><button class="btn" id="importAllBtn">백업 복원</button><input type="file" id="importAllFile" accept=".json,application/json" hidden></div></header>
+<section class="hero"><div class="hero-main"><div class="eyebrow">DATA-DRIVEN INVESTING WORKSPACE</div><h1>종목별 기록을 쌓고,<br>데이터로 예측을 검증하세요.</h1><p>국내주식과 해외주식을 한 곳에서 관리합니다. 거래 기록으로 평단과 수량을 계산하고, 종목마다 별도 탭에서 현재가·손익·과거 패턴·예측 성과를 확인할 수 있습니다.</p></div><div class="hero-side"><div><h3>기록이 쌓이는 구조</h3><p>매수·매도 기록 → 보유 수량·평단 자동 계산 → 종목별 분석 → 예측 저장 → 미래 가격으로 결과 검증</p></div><div class="workflow"><span>01 종목별 탭</span><span>02 매매 기록</span><span>03 유사 패턴</span><span>04 성과 검증</span></div><div class="helper">자료는 기본적으로 이 PC의 브라우저에 저장됩니다. 주기적으로 전체 백업 파일을 내려받아 보관하세요.</div></div></section>
+<section id="apiPanel" class="panel api-panel"><div class="panel-title"><h3>한국투자증권 API 연결</h3><span id="apiStatusText" class="muted">키를 입력하기 전에는 시세 자동 조회를 사용할 수 없습니다.</span></div><form id="apiForm"><div class="api-grid"><div class="field" style="margin:0"><label for="appKey">실전투자용 App Key</label><input id="appKey" autocomplete="off" spellcheck="false" placeholder="App Key"></div><div class="field" style="margin:0"><label for="appSecret">실전투자용 App Secret</label><input id="appSecret" type="password" autocomplete="new-password" placeholder="App Secret"></div><button class="btn primary" type="submit" id="saveApiBtn">키 저장 및 인증 확인</button></div></form><div class="security-note">키는 이 PC의 로컬 서버가 kis_credentials.json 파일로 저장합니다. 이 파일이나 App Secret을 다른 사람과 공유하지 마세요. 이 프로그램은 조회 전용이며 주문을 제출하지 않습니다. 국내·해외 종목의 현재가와 일봉 조회에는 증권사 API 권한 및 호출 한도가 적용됩니다.</div></section>
+<div class="section-heading"><div><div class="kicker">PORTFOLIO OVERVIEW</div><h2>전체 포트폴리오</h2><p>종목을 추가하면 각 종목이 독립 탭으로 생성됩니다. 합산 금액은 통화별로 분리합니다.</p></div><div class="form-actions"><button class="btn primary" id="addStockBtn">＋ 종목 추가</button><button class="btn" id="refreshAllBtn">현재가 전체 갱신</button></div></div>
+<div class="metrics"><div class="metric"><div class="metric-label">등록 종목</div><div class="metric-value" id="metricCount">0개</div><div class="metric-note">국내 + 해외</div></div><div class="metric"><div class="metric-label">국내 평가손익</div><div class="metric-value" id="metricKrPnl">₩0</div><div class="metric-note" id="metricKrNote">현재가가 있는 보유 종목 기준</div></div><div class="metric"><div class="metric-label">해외 평가손익</div><div class="metric-value" id="metricUsPnl">$0.00</div><div class="metric-note" id="metricUsNote">USD 기준 · 환율 미반영</div></div><div class="metric"><div class="metric-label">예측 검증 현황</div><div class="metric-value" id="metricAccuracy">—</div><div class="metric-note" id="metricAccuracyNote">결과가 확정된 예측이 생기면 계산</div></div></div>
+<div class="tabs-bar" id="tabsBar" role="tablist" aria-label="포트폴리오 및 종목 탭"></div>
+<section id="dashboardView" class="dashboard-grid"><div class="panel"><div class="panel-title"><h3>보유 종목 요약</h3><span id="dashboardCount" class="muted">0개 종목</span></div><div class="table-wrap"><table><thead><tr><th>종목</th><th>통화</th><th>보유 수량</th><th>평균단가</th><th>현재가</th><th>평가금액</th><th>평가손익</th><th>수익률</th><th>매매 기록</th></tr></thead><tbody id="dashboardBody"></tbody></table></div><div class="helper" style="margin-top:10px">행의 종목명을 누르면 해당 종목의 상세 탭으로 이동합니다. 평단은 등록된 매수·매도 기록을 시간순으로 반영한 이동평균 원가 방식입니다.</div></div><div class="panel"><div class="panel-title"><h3>최근 매매 활동</h3><span class="muted">최근 8건</span></div><div class="table-wrap"><table style="min-width:500px"><thead><tr><th>일자</th><th>종목</th><th>유형</th><th>수량</th><th>체결가</th></tr></thead><tbody id="recentTradesBody"></tbody></table></div></div></section>
+<section id="stockView" class="hidden"></section>
+<div class="footer"><div><strong>패턴랩 v1.3.5 RC1 · 거래 회차 및 예측 성능 검증 / 8770 (2026-10-24)</strong><br>실제 투자 성과를 보장하지 않습니다. 분석 확률은 과거 표본에 기반한 참고치이며 매수·매도 추천이 아닙니다.</div><div>거래기록·설정은 기본적으로 로컬에 저장됩니다. 증권사 계좌와 자동 동기화되지는 않으며 주문 기능은 포함하지 않습니다.</div></div>
+</div></div>
+<div id="modalShade" class="modal-shade"><div class="modal"><h3 id="modalTitle">종목 추가</h3><div id="modalContent"></div><div class="modal-actions" id="modalActions"></div></div></div><div id="toast" class="toast"></div>
+<script>
+(() => {
+'use strict';
+const STORE_KEY='patternLab.unified.v1';
+const $=id=>document.getElementById(id);
+const nowDate=()=>new Date().toISOString().slice(0,10);
+const defaultState=()=>({securities:[{id:'US:SOXL',market:'US',symbol:'SOXL',name:'SOXL',exchange:'AMS',currency:'USD'}],trades:[],quotes:{},marketData:{},predictions:[],selectedId:'US:SOXL',activeView:'overview'});
+let appState=loadState();
+let editTradeId=null;
+let lastAnalysis=null;
+let pendingTradeImport=null;
+function loadState(){try{const parsed=JSON.parse(localStorage.getItem(STORE_KEY)||'null');if(!parsed||!Array.isArray(parsed.securities))return defaultState();return {...defaultState(),...parsed, securities:parsed.securities||[],trades:parsed.trades||[],quotes:parsed.quotes||{},marketData:parsed.marketData||{},predictions:parsed.predictions||[]};}catch(e){return defaultState();}}
+function saveState(){try{localStorage.setItem(STORE_KEY,JSON.stringify(appState));$('dataModeBadge').textContent='● 로컬 기록 저장됨';}catch(e){toast('브라우저 저장 공간 부족: 전체 백업을 내려받아 보관하세요.');}}
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.remove('show'),3000);}
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function n(v){const x=Number(v);return Number.isFinite(x)?x:0;}
+function fmt(v,d=2){return Number.isFinite(v)?v.toLocaleString('ko-KR',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';}
+function money(v,currency){if(!Number.isFinite(v))return '—';return currency==='KRW'?'₩'+Math.round(v).toLocaleString('ko-KR'):'$'+v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function signedMoney(v,currency){if(!Number.isFinite(v))return '—';return (v>0?'+':v<0?'−':'')+money(Math.abs(v),currency);}
+function pct(v){return Number.isFinite(v)?(v>0?'+':'')+v.toFixed(2)+'%':'—';}
+function cls(v){return !Number.isFinite(v)?'neutral':v>0?'positive':v<0?'negative':'neutral';}
+function security(id){return appState.securities.find(s=>s.id===id);}
+function secLabel(s){return s?`${s.name} (${s.symbol})`:'알 수 없는 종목';}
+function curr(s){return s?.market==='KR'?'KRW':'USD';}
+function exchangeDefault(market){return market==='KR'?'J':'AMS';}
+function stockTrades(id){return appState.trades.filter(t=>t.securityId===id).slice().sort((a,b)=>a.date.localeCompare(b.date)||String(a.createdAt).localeCompare(String(b.createdAt)));}
+function calculatePosition(id){
+ const ts=stockTrades(id);let qty=0,cost=0,priceCost=0,realized=0,buyQty=0,sellQty=0,invalid=[],roundTrips=[],events=[],roundStart=null,roundId=1;
+ for(const t of ts){
+  const q=n(t.qty),p=n(t.price),fees=n(t.fees);
+  if(!(q>0&&p>0)||!(t.side==='BUY'||t.side==='SELL')){invalid.push({...t,_reason:'수량·체결가·방향 오류'});continue;}
+  if(t.side==='BUY'){
+   if(qty<1e-7)roundStart=t.date;
+   qty+=q;cost+=q*p+fees;priceCost+=q*p;buyQty+=q;
+  }else{
+   if(q>qty+1e-7){invalid.push({...t,_reason:`매도 ${q}주 > 당시 보유 ${qty}주; 누락된 초기 보유분 또는 거래 순서 확인 필요`});continue;}
+   const avg=qty>0?cost/qty:0;const priceAvg=qty>0?priceCost/qty:0;
+   const removed=avg*q;realized+=q*p-fees-removed;qty-=q;cost-=removed;priceCost-=priceAvg*q;sellQty+=q;
+   if(qty<1e-7){roundTrips.push({round:roundId++,start:roundStart||t.date,end:t.date,closingTradeId:t.id});events.push(`전량 청산 ${t.date} · 잔고 0주`);qty=0;cost=0;priceCost=0;roundStart=null;}
+  }
+ }
+ const avg=qty>0?priceCost/qty:0;
+ return {qty,cost,priceCost,avg,realized,buyQty,sellQty,invalid,trades:ts,roundTrips,roundStart,roundCount:roundTrips.length+(qty>0?1:0),events};
+}
+function tradeLedgerAuditHTML(id,p){
+ const ref=appState.holdingReferences?.[id],hasRef=ref&&Number(ref.qty)>=0&&Number(ref.avg)>0;
+ const gap=hasRef?p.qty-Number(ref.qty):null;
+ const dup=new Map(),suspects=[];
+ for(const t of p.trades){const key=[t.date,t.side,Number(t.qty),Number(t.price).toFixed(4)].join('|');const arr=dup.get(key)||[];arr.push(t);dup.set(key,arr);}
+ for(const [key,arr] of dup){if(arr.length>1)suspects.push({key,count:arr.length});}
+ const rounds=p.roundTrips.slice(-12).map(x=>`<tr><td>${x.round}</td><td>${esc(x.start)}</td><td>${esc(x.end)}</td><td>0주</td></tr>`).join('');
+ const bad=p.invalid.slice(0,12).map(x=>`<li>${esc(x.date)} · ${esc(x.side)} ${esc(x.qty)}주 · ${esc(x._reason||'초과 매도')}</li>`).join('');
+ const duplicates=suspects.slice(0,10).map(x=>`<li>${esc(x.key)} · ${x.count}건 (동일 체결일·방향·수량·단가, 확인 필요)</li>`).join('');
+ const issue=p.invalid.length||suspects.length||(hasRef&&Math.abs(gap)>1e-7);
+ return `<div class="subsection" style="border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:12px"><div class="subsection-head"><h4>거래 회차 · 원장 검증</h4><span class="badge ${issue?'pending':'done'}">${issue?'대조 필요':'검사 완료'}</span></div><p class="helper">원본 거래는 삭제·추정 보정하지 않습니다. 기록상 보유 수량이 0이 되는 시점에만 회차가 종료됩니다. 실제 전량 청산 거래가 CSV에서 누락되었다면 자동으로 만들어내지 않습니다.</p><div class="helper">완료된 청산 회차 <b>${p.roundTrips.length}회</b> · 현재 ${p.qty>0?`진행 중 회차 (${esc(p.roundStart||'시작일 미상')})`:'보유 없음'} · 초과 매도/형식 오류 <b>${p.invalid.length}건</b> · 동일 조건 중복 후보 <b>${suspects.length}그룹</b>${hasRef?` · 증권사와 수량 차이 <b>${fmt(gap,0)}주</b>`:''}</div><details style="margin-top:10px"><summary style="cursor:pointer;font-weight:700">청산 회차와 이상 거래 상세 보기</summary><div class="table-wrap"><table><thead><tr><th>회차</th><th>시작일</th><th>전량 청산일</th><th>청산 후 잔고</th></tr></thead><tbody>${rounds||'<tr><td colspan="4">거래 기록상 확인된 전량 청산 없음</td></tr>'}</tbody></table></div>${bad?`<p><b>계산에서 제외된 거래</b></p><ul>${bad}</ul>`:''}${duplicates?`<p><b>중복 의심 (자동 삭제 안 함)</b></p><ul>${duplicates}</ul>`:''}${hasRef&&Math.abs(gap)>1e-7?'<p class="status error">증권사 잔고와 원장 잔고가 다릅니다. 누락된 전량 매도, 초기 잔고, 중복 체결을 증권사 원본과 대조해야 합니다.</p>':''}</details></div>`;
+}
+function referenceHoldingHTML(id, p){
+  const r=appState.holdingReferences?.[id];
+  const fmtRef=v=>Number(v).toLocaleString('en-US',{maximumFractionDigits:4});
+  const have=r&&Number.isFinite(Number(r.qty))&&Number.isFinite(Number(r.avg))&&Number(r.qty)>=0&&Number(r.avg)>0;
+  const qtyGap=have?p.qty-Number(r.qty):null;
+  const avgGap=have&&p.qty>0?p.avg-Number(r.avg):null;
+  const mismatch=have&&(Math.abs(qtyGap)>1e-7||Math.abs(avgGap)>0.005);
+  return `<div class="status" style="margin:11px 0;border-color:${mismatch?'#e5b5a9':'var(--border)'};color:var(--ink)"><strong>증권사 잔고 대조 (거래 내역은 변경하지 않음)</strong><div class="helper" style="margin:5px 0 8px">증권사 화면의 보유 수량·평단을 별도로 저장하여 패턴랩 계산값과 비교합니다. 입력값으로 거래를 덮어쓰지 않습니다.</div><div class="form-actions" style="align-items:flex-end"><label style="font-size:11px">증권사 보유 수량(주)<input id="referenceQty" type="number" min="0" step="any" value="${have?Number(r.qty):''}" style="display:block;width:120px;padding:8px"></label><label style="font-size:11px">증권사 평단(USD/KRW)<input id="referenceAvg" type="number" min="0.000001" step="any" value="${have?Number(r.avg):''}" style="display:block;width:155px;padding:8px"></label><button type="button" class="btn small primary" id="saveHoldingReference">잔고 기준값 저장</button></div>${have?`<div style="margin-top:8px;font-size:11px">증권사 기준: <strong>${fmtRef(r.qty)}주 / ${fmtRef(r.avg)}</strong> · 패턴랩 계산: <strong>${fmtRef(p.qty)}주 / ${fmtRef(p.avg)}</strong><br>${mismatch?`<strong style="color:var(--down)">불일치: 수량 ${qtyGap>0?'+':''}${fmtRef(qtyGap)}주, 평단 ${avgGap>0?'+':''}${fmtRef(avgGap)}. 원본 CSV와 전체 백업을 점검하세요.</strong>`:'<strong style="color:var(--up)">수량과 평단이 대조 기준에 일치합니다.</strong>'}</div>`:''}</div>`;
+}
+function savedPredictionValidationHTML(id){
+ const ps=appState.predictions.filter(p=>p.securityId===id&&!p.demo);
+ const verified=ps.filter(p=>p.resolved&&Number.isFinite(Number(p.actualReturn)));
+ const correct=verified.filter(p=>p.match===true).length;
+ const pending=ps.length-verified.length;
+ return `<div class="status" style="color:var(--ink)"><strong>예측 기록 누적 검증 현황</strong><div style="margin-top:5px">저장 ${ps.length}건 · 검증 완료 ${verified.length}건 · 미검증 ${pending}건${verified.length?` · 방향 적중 ${correct}/${verified.length}건 (${(correct/verified.length*100).toFixed(1)}%)`:''}</div><div class="helper" style="margin-top:4px">저장된 예측은 같은 설정끼리 비교해야 합니다. 완료된 예측은 과거 데이터 조회 이후 결과가 확정된 경우에 한해 집계되며, 이 통계는 재학습이나 자동 매매를 수행하지 않습니다.</div></div>`;
+}
+function holdingActionPlanHTML(id,{accuracy,compounded,maxDrawdown,step,horizon,testsCount}){
+ const calculated=calculatePosition(id);
+ const reference=appState.holdingReferences?.[id];
+ const hasReference=reference&&Number(reference.qty)>0&&Number(reference.avg)>0;
+ const qty=hasReference?Number(reference.qty):calculated.qty;
+ const avg=hasReference?Number(reference.avg):calculated.avg;
+ const q=quoteOf(id);
+ const price=Number(q?.price);
+ const hasPrice=q&&Number.isFinite(price)&&price>0;
+ const gap=hasReference?calculated.qty-qty:0;
+ const invalidCount=calculated.invalid.length;
+ const weak=accuracy<45||compounded<0||maxDrawdown>25||step<horizon||testsCount<30;
+ const marker=hasReference?'증권사 입력 기준 (거래 원장과 별개)':'거래 기록 계산 기준 · 증권사 확인 필요';
+ const diffMsg=hasReference&&Math.abs(gap)>0.000001?`<div class="status error">거래 원장 ${calculated.qty}주와 증권사 기준 ${qty}주가 ${Math.abs(gap)}주 다릅니다. 과거 거래를 지우거나 임의 매도를 추가하지 마세요. 동일 날짜·방향·수량·단가의 중복과 누락된 전량 매도를 원본 CSV에서 대조해야 합니다.</div>`:'';
+ const formatPrice=v=>'$'+v.toFixed(2);
+ const pnl=hasPrice?(price-avg)*qty:NaN;
+ const scenario=weak
+ ? '현재 모델은 정확도·가상 전략 성과·낙폭에서 신뢰 기준을 충족하지 못합니다. 모델의 추가매수 신호는 사용하지 않고, 실제 잔고 기준으로 유지·축소·분할매도 시나리오만 검토하세요.'
+ : '백테스트 성능이 개선되어도 외부 검증이 완료되기 전에는 자동매매 근거로 사용하지 마세요.';
+ return `<div class="status" style="margin-top:12px;color:var(--ink);border-left:4px solid #c36a4d"><strong>내 보유 수량·평단에 따른 대응 시나리오</strong>
+ <div class="helper" style="margin-top:5px">기준: ${esc(marker)} · ${qty.toLocaleString('ko-KR')}주 · 평균 ${formatPrice(avg)}${hasReference?` (입력 원값 ${Number(reference.avg).toFixed(4)})`:''}. 실제 매매 실행 기능은 없습니다.</div>
+ ${diffMsg}
+ <div class="position-metrics" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-top:10px">
+ <div class="position-metric"><span>원가 (수수료 제외)</span><strong>${formatPrice(qty*avg)}</strong><small>보유 수량 × 평균단가</small></div>
+ <div class="position-metric"><span>현재가 기준 평가손익</span><strong>${hasPrice?formatPrice(pnl):'시세 없음'}</strong><small>${hasPrice?'현재가 '+formatPrice(price):'현재가를 갱신해 주세요'} · 환율/비용 제외</small></div>
+ <div class="position-metric"><span>평단 회복 시 매도 금액</span><strong>${formatPrice(qty*avg)}</strong><small>수수료·세금 제외 손익분기 매도가</small></div></div>
+ <div style="margin-top:9px"><strong>모델 반영 의견: ${weak?'매수 신호 사용 보류':'관찰 및 추가 검증'}</strong><p style="margin:5px 0">${scenario}</p></div>
+ <div class="helper"><strong>대응 방법</strong><br>① <b>보유 유지:</b> 추가 손실을 감당할 수 있는 범위와 현금 필요 시점을 먼저 확인하세요.<br>② <b>위험 축소:</b> 계좌의 SOXL 비중이 지나치게 높다면 일부 매도로 집중 위험을 줄이는 방안을 고려하세요.<br>③ <b>반등 시 대응:</b> ${formatPrice(avg)}은 단순 평단 회복 기준이며, 반드시 그 가격까지 기다려야 한다는 의미는 아닙니다. 목표가·매도 비율은 최신 시장 추세와 현금 필요에 맞춰 재검토하세요.<br>④ <b>추가매수:</b> 현재 백테스트 성능으로는 정당화할 수 없으므로 신호 기반 추가매수는 보류하는 편이 합리적입니다.</div>
+ <div class="helper" style="margin-top:8px">※ 모델 계산의 누적 수익률은 실제 계좌 누적 수익률이 아닙니다. 시세가 오래되었을 수 있으며 SOXL은 일간 3배 레버리지로 경로 의존성과 급격한 손실 위험이 있습니다.</div></div>`;
+}
+function strategyGuidanceHTML({accuracy,compounded,maxDrawdown,avgStrategy,step,horizon,testsCount}){
+ const unreliable=accuracy<45||compounded<0||maxDrawdown>25||testsCount<30;
+ const overlapping=step<horizon;
+ const main=unreliable?'현재 모델 성과는 신뢰하기 어려우므로, 이 백테스트만을 근거로 SOXL 추가매수·전량매도·공매도 결정을 내리지 않는 편이 안전합니다.':'현재 결과가 개선됐더라도 실제 계좌 매매 전에는 충분한 기간과 데이터로 반복 검증하세요.';
+ return `<div class="status" style="color:var(--ink);border-left:4px solid ${unreliable?'#c85e4b':'#1f735f'};margin-top:12px"><strong>SOXL 보유 포지션 대응 가이드 (정보 제공 · 자동매매 아님)</strong><p style="margin:7px 0">${main}</p><div class="helper">1. 먼저 위의 증권사 잔고 대조에서 실제 수량·평단 불일치를 해결합니다. <br>2. 손실 감내 범위, 추가 투입 가능 현금, 목표 보유 기간을 기준으로 분할매도·현금 확보 등 방어 시나리오를 검토합니다.<br>3. 3년/K=15와 5년/K=35를 서로 별도로 평가하고, 외부 검증 기간에서 정확도·MDD·비용 차감 수익률이 지속 개선되는지 확인합니다.<br>4. ${overlapping?'현재 평가 간격이 예측 기간보다 짧아 평가 구간이 중첩됩니다. 누적 수익률은 실제 실행 가능한 계좌 수익률이 아닙니다.':'평가 간격이 예측 기간 이상이지만 복리 수익률과 실제 자본 투입·포지션 운용은 별도입니다.'}<br>5. SOXL은 레버리지 ETF이므로 장기 보유 손익이 단순 지수 배수와 달라질 수 있습니다. 매매를 결정하기 전 실제 계좌 기준으로 확인하세요.</div><div class="helper" style="margin-top:7px">현재 검증: 방향 정확도 ${accuracy.toFixed(1)}%, 가상 누적 수익률 ${pct(compounded)}, 최대 낙폭 ${pct(-maxDrawdown)}, 전략 평균 ${pct(avgStrategy)}. 데이터가 늘어도 자동으로 정확도가 좋아지는 것은 아니며, 새 데이터를 확보할 때마다 미사용 구간에서 재평가해야 합니다.</div></div>`;
+}
+function quoteOf(id){return appState.quotes[id]||null;}
+function calculateMark(id){const s=security(id),p=calculatePosition(id),q=quoteOf(id),price=q&&Number.isFinite(Number(q.price))?Number(q.price):NaN,value=p.qty>0&&Number.isFinite(price)?p.qty*price:NaN,pnl=Number.isFinite(value)?value-p.cost:NaN,ret=Number.isFinite(pnl)&&p.cost>0?pnl/p.cost*100:NaN;return {s,p,q,price,value,pnl,ret,currency:curr(s)};}
+function setView(view,id=null){if(view!==appState.activeView||id!==appState.selectedId)editTradeId=null;appState.activeView=view;appState.selectedId=id;saveState();render();if(view==='stock'&&id)refreshQuoteQuiet(id);}
+function updateStockQuoteUI(id){if(appState.activeView!=='stock'||appState.selectedId!==id)return;const m=calculateMark(id);const priceEl=document.querySelector('#stockView .current-price');const noteEl=document.querySelector('#stockView .price-note');const posEl=document.querySelector('#stockView .position-metrics');if(priceEl)priceEl.textContent=money(m.price,m.currency);if(noteEl){noteEl.textContent=m.q&&Number.isFinite(Number(m.q.changePct))?`${pct(Number(m.q.changePct))} 전일 대비`:(m.q?.fetchedAt?new Date(m.q.fetchedAt).toLocaleString('ko-KR'):'현재가 미조회');noteEl.className='price-note '+cls(Number(m.q?.changePct));}if(posEl)posEl.outerHTML=positionMetricsHTML(m);}
+function updateQuotesUI(){renderTabs();renderDashboard();if(appState.activeView==='stock'&&appState.selectedId)updateStockQuoteUI(appState.selectedId);}
+function renderTabs(){const bar=$('tabsBar');let html=`<button class="tab ${appState.activeView==='overview'?'active':''}" data-view="overview" role="tab"><span class="tab-dot"></span>전체 요약</button>`;for(const s of appState.securities){html+=`<button class="tab ${appState.activeView==='stock'&&appState.selectedId===s.id?'active':''}" data-stock-tab="${esc(s.id)}" role="tab"><span class="tab-dot"></span>${esc(s.symbol)}${calculatePosition(s.id).qty>0?' · 보유':''}</button>`;}html+=`<button class="tab tab-add" id="tabAddStock">＋ 종목 추가</button>`;bar.innerHTML=html;bar.querySelectorAll('[data-view="overview"]').forEach(b=>b.onclick=()=>setView('overview'));bar.querySelectorAll('[data-stock-tab]').forEach(b=>b.onclick=()=>setView('stock',b.dataset.stockTab));$('tabAddStock').onclick=openAddStock;}
+function renderDashboard(){let krPnl=0,usPnl=0,krCost=0,usCost=0,krPriced=0,usPriced=0;for(const s of appState.securities){const m=calculateMark(s.id);if(s.market==='KR'){krCost+=m.p.cost;if(Number.isFinite(m.pnl)){krPnl+=m.pnl;krPriced++;}}else{usCost+=m.p.cost;if(Number.isFinite(m.pnl)){usPnl+=m.pnl;usPriced++;}}}
+$('metricCount').textContent=appState.securities.length+'개';$('metricKrPnl').textContent=money(krPnl,'KRW');$('metricKrPnl').className='metric-value '+cls(krPnl);$('metricKrNote').textContent=`원가 ${money(krCost,'KRW')} · 평가가능 ${krPriced}종목`;$('metricUsPnl').textContent=money(usPnl,'USD');$('metricUsPnl').className='metric-value '+cls(usPnl);$('metricUsNote').textContent=`원가 ${money(usCost,'USD')} · 평가가능 ${usPriced}종목`;
+const closed=appState.predictions.filter(p=>p.resolved&&!p.demo),hits=closed.filter(p=>p.match).length;$('metricAccuracy').textContent=closed.length?fmt(hits/closed.length*100,1)+'%':'—';$('metricAccuracyNote').textContent=closed.length?`${hits}/${closed.length}건 일치 · 전체 종목`:'결과가 확정된 예측이 생기면 계산';$('dashboardCount').textContent=appState.securities.length+'개 종목';const body=$('dashboardBody');if(!appState.securities.length){body.innerHTML=`<tr><td colspan="9"><div class="empty"><strong>아직 등록한 종목이 없습니다.</strong>‘종목 추가’를 눌러 국내주식이나 해외주식을 등록해 보세요.</div></td></tr>`;}else{body.innerHTML=appState.securities.map(s=>{const m=calculateMark(s.id),tradeCount=appState.trades.filter(t=>t.securityId===s.id).length;return `<tr><td><button class="stock-link" data-open-stock="${esc(s.id)}">${esc(s.name)}</button><span class="stock-meta">${esc(s.symbol)} · ${s.market==='KR'?'국내':'해외'}${s.market==='US'?' · '+esc(s.exchange):''}</span></td><td>${curr(s)}</td><td>${fmt(m.p.qty,4).replace(/\.0+$/,'')}</td><td>${money(m.p.avg,curr(s))}</td><td>${money(m.price,curr(s))}</td><td>${money(m.value,curr(s))}</td><td class="${cls(m.pnl)}">${signedMoney(m.pnl,curr(s))}</td><td class="${cls(m.ret)}">${pct(m.ret)}</td><td>${tradeCount}건</td></tr>`;}).join('');body.querySelectorAll('[data-open-stock]').forEach(b=>b.onclick=()=>setView('stock',b.dataset.openStock));}
+const recent=$('recentTradesBody'),all=appState.trades.slice().sort((a,b)=>b.date.localeCompare(a.date)||String(b.createdAt).localeCompare(String(a.createdAt))).slice(0,8);recent.innerHTML=all.length?all.map(t=>{const s=security(t.securityId);return `<tr><td>${esc(t.date)}</td><td>${esc(s?.symbol||'삭제된 종목')}</td><td><span class="badge ${t.side==='BUY'?'done':'pending'}">${t.side==='BUY'?'매수':'매도'}</span></td><td>${fmt(n(t.qty),4).replace(/\.0+$/,'')}</td><td>${money(n(t.price),curr(s))}</td></tr>`;}).join(''):`<tr><td colspan="5"><div class="empty">아직 매매 기록이 없습니다.</div></td></tr>`;}
+function render(){renderTabs();renderDashboard();if(appState.activeView==='overview'||!security(appState.selectedId)){$('dashboardView').classList.remove('hidden');$('stockView').classList.add('hidden');}else{$('dashboardView').classList.add('hidden');$('stockView').classList.remove('hidden');renderStock(appState.selectedId);}}
+function positionMetricsHTML(m){return `<div class="position-metrics"><div class="position-metric"><span>보유 수량</span><strong>${fmt(m.p.qty,4).replace(/\.0+$/,'')}</strong><small>주</small></div><div class="position-metric"><span>평균 매입단가</span><strong>${m.p.qty>0?money(m.p.avg,m.currency):'—'}</strong><small>매수 수수료 제외 평단</small></div><div class="position-metric"><span>매입 원가</span><strong>${m.p.qty>0?money(m.p.cost,m.currency):'—'}</strong><small>현재 보유분 · 매수 수수료 포함</small></div><div class="position-metric"><span>평가금액</span><strong>${money(m.value,m.currency)}</strong><small>현재가 조회 필요</small></div><div class="position-metric"><span>평가손익 / 수익률</span><strong class="${cls(m.pnl)}">${signedMoney(m.pnl,m.currency)}</strong><small class="${cls(m.ret)}">${pct(m.ret)}</small></div><div class="position-metric"><span>누적 실현손익</span><strong class="${cls(m.p.realized)}">${signedMoney(m.p.realized,m.currency)}</strong><small>매도 완료 거래 기준</small></div></div>`;}
+function renderStock(id){const s=security(id);if(!s)return;const m=calculateMark(id),data=appState.marketData[id]||[],ts=stockTrades(id),preds=appState.predictions.filter(p=>p.securityId===id&&!p.demo);const qtime=m.q?.fetchedAt?new Date(m.q.fetchedAt).toLocaleString('ko-KR'):'현재가 미조회';
+$('stockView').innerHTML=`<div class="stock-head"><div class="stock-title"><div class="ticker-box">${esc(s.market==='KR'?'KR':'US')}</div><div><h2>${esc(s.name)} <span style="color:var(--muted);font-size:13px;font-weight:700">${esc(s.symbol)}</span></h2><p>${s.market==='KR'?'국내 주식 · KRW':'미국/해외 주식 · USD · '+esc(s.exchange)} · 거래 ${ts.length}건 · 과거 데이터 ${data.length}행</p></div></div><div class="price-box"><div class="current-price">${money(m.price,m.currency)}</div><div class="price-note ${cls(m.q?.changePct)}">${m.q&&Number.isFinite(m.q.changePct)?`${pct(m.q.changePct)} 전일 대비`:qtime}</div><div class="form-actions" style="justify-content:flex-end;margin-top:8px"><button class="btn small" id="refreshThisQuote">현재가 갱신</button><button class="btn small" id="manualQuoteBtn">현재가 직접 입력</button><button class="btn small" id="stockSettingsBtn">종목 설정</button><button class="btn small danger" id="removeStockBtn">종목 삭제</button></div></div></div>
+${positionMetricsHTML(m)}
+${referenceHoldingHTML(id,m.p)}${tradeLedgerAuditHTML(id,m.p)}
+<div class="detail-grid"><div class="panel"><div class="panel-title"><h3>${editTradeId?'매매 기록 수정':'매매 기록 추가'}</h3><span>${esc(s.symbol)}</span></div><div class="trade-entry-tabs" role="tablist" aria-label="매매 기록 입력 방식"><button type="button" class="entry-tab active" id="manualTradeTab" role="tab" aria-selected="true">직접 입력</button><button type="button" class="entry-tab" id="csvTradeTab" role="tab" aria-selected="false">CSV 일괄 가져오기</button></div><div id="manualTradePane"><form id="tradeForm"><div class="field-row"><div class="field"><label for="tradeDate">거래일</label><input id="tradeDate" type="date" value="${nowDate()}" required></div><div class="field"><label for="tradeSide">유형</label><select id="tradeSide"><option value="BUY">매수</option><option value="SELL">매도</option></select></div></div><div class="field-row"><div class="field"><label for="tradeQty">수량(주)</label><input id="tradeQty" type="number" min="0.000001" step="any" placeholder="예: 100" required></div><div class="field"><label for="tradePrice">체결 단가 (${m.currency})</label><input id="tradePrice" type="number" min="0.000001" step="any" placeholder="체결 가격" required></div></div><div class="field-row"><div class="field"><label for="tradeFees">수수료·비용 (${m.currency})</label><input id="tradeFees" type="number" min="0" step="any" value="0"></div><div class="field"><label for="tradeNote">메모(선택)</label><input id="tradeNote" maxlength="120" placeholder="예: 눌림목 추가 매수"></div></div><div class="form-actions"><button class="btn primary" id="saveTradeBtn" type="submit">${editTradeId?'매매 기록 수정':'매매 기록 저장'}</button><button class="btn ${editTradeId?'':'hidden'}" type="button" id="cancelEditTrade">수정 취소</button></div><div class="status">평단·수량은 거래일 순서대로 계산합니다. 기존 보유분은 실제 과거 매수 내역을 입력하거나, 과거 잔고를 하나의 매수 기록으로 등록하세요. 매도 수량은 매도일 기준 보유 수량보다 많을 수 없습니다.</div></form></div>
+<div id="csvTradePane" class="hidden">
+<p class="trade-import-help">키움증권 주문·체결(2행), 거래·정산(3행) 및 일반 거래 CSV를 자동 판별해 미리보기와 검사를 합니다. 날짜, 매수·매도, 수량, 체결 단가가 필요하며 수수료와 메모는 선택 항목입니다. 열 이름은 한국어·영어 일반 표기를 지원합니다. 이 탭은 현재 선택한 종목에 거래를 가져옵니다.</p>
+<div class="status" style="color:var(--ink)"><strong>신규: 원본 CSV ↔ 저장 원장 안전 대조</strong><div class="helper">여러 CSV를 함께 선택하면 누락 매수·매도, 날짜/수수료가 다른 유사 거래, 중복 의심을 확인합니다. 대조 자체는 저장된 기록을 절대 변경하지 않습니다. 결과를 JSON으로 저장해 비교할 수 있습니다.</div><input id="tradeAuditFiles" type="file" multiple accept=".csv,text/csv" style="max-width:100%;margin:8px 0"><div class="form-actions"><button id="tradeAuditRun" type="button" class="btn">원장 정밀 대조 실행</button><button id="tradeAuditDownload" type="button" class="btn" disabled>대조 결과 다운로드</button></div><div id="tradeAuditResults" class="status">CSV 여러 개를 선택한 뒤 대조를 실행하세요. 기존 거래는 자동 등록하지 않습니다.</div></div><div class="field"><label for="tradeImportFile">매매 기록 CSV 파일</label><input id="tradeImportFile" type="file" accept=".csv,text/csv,application/vnd.ms-excel"></div>
+<div class="form-actions"><button class="btn" type="button" id="downloadTradeTemplate">CSV 양식 다운로드</button><button class="btn primary" type="button" id="commitTradeImport" disabled>유효한 거래 가져오기</button></div>
+<div id="tradeImportStatus" class="status">CSV 파일을 선택하면 등록 가능한 거래, 중복, 오류 행을 미리 확인할 수 있습니다.</div>
+<div class="subsection"><div class="subsection-head"><h4>가져오기 미리보기</h4><span id="tradeImportCount" class="badge">0건</span></div><div class="table-wrap"><table class="trade-import-table"><thead><tr><th>CSV 행</th><th>거래일</th><th>유형</th><th>수량</th><th>체결가</th><th>수수료</th><th>처리 상태</th></tr></thead><tbody id="tradeImportPreview"><tr><td colspan="7"><div class="empty">CSV 파일을 선택해 주세요.</div></td></tr></tbody></table></div><div class="helper" style="margin-top:8px">같은 종목·날짜·유형·수량·체결가·수수료가 이미 있으면 중복으로 간주해 건너뜁니다. 수동 입력도 동일한 기준으로 중복 저장을 차단합니다. 보유 수량보다 많은 매도는 자동 등록하지 않으며 거래 회차 검사에 경고를 남깁니다. 미리보기는 최대 100행까지 표시합니다.</div></div>
+</div>
+<div class="subsection"><div class="subsection-head"><h4>매매 기록</h4><span class="badge">${ts.length}건</span></div><div class="form-actions" style="margin:8px 0"><button class="btn small" type="button" id="selectAllTradesBtn">전체 선택</button><button class="btn small danger" type="button" id="deleteSelectedTradesBtn" disabled>선택 항목 삭제 (0)</button><button class="btn small danger" type="button" id="deleteAllTradesBtn">이 종목 기록 전체 삭제</button></div><div class="table-wrap"><table class="trade-table"><thead><tr><th><input type="checkbox" id="tradeSelectAll" aria-label="현재 목록 전체 선택"></th><th>거래일</th><th>구분</th><th>수량</th><th>체결가</th><th>수수료</th><th>실현손익</th><th>메모</th><th>관리</th></tr></thead><tbody id="tradeRows">${tradeRowsHTML(id)}</tbody></table></div><div class="helper" style="margin-top:8px">매수 수수료는 원가에 포함하고, 매도 수수료는 실현손익에서 차감합니다. 세무상 원가 산정 방식과 다를 수 있으므로 참고용으로 사용하세요.</div></div></div>
+<div class="panel"><div class="panel-title"><h3>과거 패턴 분석</h3><span class="muted">ANALYSIS</span></div><div class="field-row"><div class="field"><label for="historyDays">과거 데이터 기간</label><select id="historyDays"><option value="365">최근 1년</option><option value="730">최근 2년</option><option value="1095" selected>최근 3년</option><option value="1825">최근 5년</option></select></div><div class="field"><label for="analysisHorizon">예측 기간</label><select id="analysisHorizon"><option value="5">5거래일</option><option value="10" selected>10거래일</option><option value="20">20거래일</option></select></div></div><div class="field-row"><div class="field"><label for="analysisK">비교할 유사 사례 수</label><select id="analysisK"><option value="5">5개</option><option value="10">10개</option><option value="15" selected>15개</option><option value="25">25개</option><option value="35">35개</option></select></div><div class="field"><label for="analysisThreshold">보합 판정 기준</label><select id="analysisThreshold"><option value="0.5">±0.5%</option><option value="1" selected>±1.0%</option><option value="2">±2.0%</option></select></div></div><div class="form-actions"><button class="btn" id="loadHistoryBtn">API에서 과거 데이터 불러오기</button><button class="btn primary" id="analyzeBtn">유사 패턴 분석</button><input type="file" id="csvStockFile" accept=".csv,text/csv" hidden><button class="btn" id="csvStockBtn">CSV 불러오기</button></div><div id="historyStatus" class="status">${data.length?`저장된 과거 데이터 ${data.length}행 · ${esc(data[0]?.date||'')} ~ ${esc(data[data.length-1]?.date||'')}`:'API 키가 연결되어 있으면 과거 일봉을 자동 수집할 수 있습니다. CSV를 불러와 분석할 수도 있습니다.'}</div><div id="analysisResults">${renderExistingAnalysis(id)}</div><div class="subsection" id="backtestPanel"><div class="subsection-head"><h4>워크포워드 백테스트</h4><span class="badge">OUT-OF-SAMPLE</span></div><p class="helper">각 과거 시점에서 그 시점 이전에 결과가 확정된 사례만 사용해 예측합니다. 기본 간격은 예측 기간과 같아 평가 구간의 중첩을 줄입니다. 현재 선택한 종목의 일봉 데이터가 필요합니다.</p><div class="field-row"><div class="field"><label for="backtestStep">예측 평가 간격</label><select id="backtestStep"><option value="5">5거래일마다</option><option value="10" selected>10거래일마다</option><option value="20">20거래일마다</option><option value="1">매 거래일마다(중첩)</option></select></div><div class="field"><label for="backtestCost">왕복 비용 가정(%)</label><select id="backtestCost"><option value="0">0% · 비용 제외</option><option value="0.1">0.1%</option><option value="0.2" selected>0.2%</option><option value="0.5">0.5%</option></select></div></div><div class="form-actions"><button class="btn primary" id="runBacktestBtn">워크포워드 백테스트 실행</button></div><div id="backtestResults" class="status">아직 백테스트를 실행하지 않았습니다. API에서 일봉을 불러온 뒤 실행하세요.</div>${savedPredictionValidationHTML(id)}</div>${predictionScorecardHTML(id)}<div class="subsection"><div class="subsection-head"><h4>저장한 예측</h4><span class="badge">${preds.length}건</span></div><div class="table-wrap"><table style="min-width:700px"><thead><tr><th>기준일</th><th>기간</th><th>예측 방향</th><th>상승/하락/보합</th><th>표본</th><th>실제 결과</th><th>판정</th><th>관리</th></tr></thead><tbody>${predictionRowsHTML(id)}</tbody></table></div></div></div></div>`;
+// handlers and editing state
+$('saveHoldingReference').onclick=()=>{const qty=Number($('referenceQty').value),avg=Number($('referenceAvg').value);if(!Number.isFinite(qty)||qty<0||!Number.isFinite(avg)||avg<=0||!$('referenceQty').value||!$('referenceAvg').value){toast('증권사 수량과 평단을 올바르게 입력하세요.');return;}appState.holdingReferences=appState.holdingReferences||{};appState.holdingReferences[id]={qty,avg,updatedAt:new Date().toISOString()};saveState();render();toast('증권사 잔고 기준값을 저장했습니다. 거래 내역은 변경되지 않았습니다.');};
+$('refreshThisQuote').onclick=()=>refreshQuote(id,true);$('manualQuoteBtn').onclick=()=>openManualQuote(id);$('stockSettingsBtn').onclick=()=>openEditStock(id);$('removeStockBtn').onclick=()=>removeStock(id);
+$('tradeForm').onsubmit=e=>{e.preventDefault();saveTradeForm(id);};if(editTradeId){const t=appState.trades.find(x=>x.id===editTradeId);if(t&&t.securityId===id){$('tradeDate').value=t.date;$('tradeSide').value=t.side;$('tradeQty').value=t.qty;$('tradePrice').value=t.price;$('tradeFees').value=t.fees??0;$('tradeNote').value=t.note||'';}}if($('cancelEditTrade'))$('cancelEditTrade').onclick=()=>{editTradeId=null;render();};$('tradeRows').querySelectorAll('[data-edit-trade]').forEach(b=>b.onclick=()=>{editTradeId=b.dataset.editTrade;render();});$('tradeRows').querySelectorAll('[data-delete-trade]').forEach(b=>b.onclick=()=>deleteTrade(b.dataset.deleteTrade));
+const updateTradeSelection=()=>{const checks=[...document.querySelectorAll('.trade-row-select')];const selected=checks.filter(c=>c.checked);const bulk=$('deleteSelectedTradesBtn');if(bulk){bulk.disabled=selected.length===0;bulk.textContent=`선택 항목 삭제 (${selected.length})`;}const all=$('tradeSelectAll');if(all){all.checked=checks.length>0&&selected.length===checks.length;all.indeterminate=selected.length>0&&selected.length<checks.length;}};
+document.querySelectorAll('.trade-row-select').forEach(c=>c.onchange=updateTradeSelection);
+if($('tradeSelectAll'))$('tradeSelectAll').onchange=e=>{document.querySelectorAll('.trade-row-select').forEach(c=>c.checked=e.target.checked);updateTradeSelection();};
+if($('selectAllTradesBtn'))$('selectAllTradesBtn').onclick=()=>{document.querySelectorAll('.trade-row-select').forEach(c=>c.checked=true);updateTradeSelection();};
+if($('deleteSelectedTradesBtn'))$('deleteSelectedTradesBtn').onclick=()=>{const ids=[...document.querySelectorAll('.trade-row-select:checked')].map(c=>c.dataset.tradeSelect);if(!ids.length)return;openModal('선택한 매매 기록 삭제',`선택한 ${ids.length}건의 매매 기록을 삭제할까요? 이 작업은 되돌릴 수 없습니다.`,[{label:'취소',action:closeModal},{label:`${ids.length}건 삭제`,primary:true,action:()=>{appState.trades=appState.trades.filter(t=>!ids.includes(t.id));editTradeId=null;saveState();closeModal();render();toast(`${ids.length}건의 매매 기록을 삭제했습니다.`);}}]);};
+if($('deleteAllTradesBtn'))$('deleteAllTradesBtn').onclick=()=>{const ids=stockTrades(id).map(t=>t.id);if(!ids.length){toast('삭제할 매매 기록이 없습니다.');return;}openModal('이 종목의 매매 기록 전체 삭제',`${security(id)?.symbol||id}의 매매 기록 ${ids.length}건을 모두 삭제할까요? 이 작업은 되돌릴 수 없습니다.`,[{label:'취소',action:closeModal},{label:`전체 ${ids.length}건 삭제`,primary:true,action:()=>{const set=new Set(ids);appState.trades=appState.trades.filter(t=>!set.has(t.id));editTradeId=null;saveState();closeModal();render();toast(`${ids.length}건의 매매 기록을 삭제했습니다.`);}}]);};
+updateTradeSelection();
+$('loadHistoryBtn').onclick=()=>loadHistoryFor(id);$('analyzeBtn').onclick=()=>runPatternAnalysis(id);$('csvStockBtn').onclick=()=>$('csvStockFile').click();$('csvStockFile').onchange=e=>{const file=e.target.files?.[0];if(file)importCsvHistory(id,file);e.target.value='';};$('runBacktestBtn').onclick=()=>runWalkForwardBacktest(id);const savedConfig=appState.lastAnalysis?.[id]?.config;if(savedConfig){for(const [field,key] of [['historyDays','lookback'],['analysisHorizon','horizon'],['analysisK','k'],['analysisThreshold','threshold']]){const el=$(field);if(el&&savedConfig[key]!==undefined)el.value=String(savedConfig[key]);}if($('backtestStep'))$('backtestStep').value=String(savedConfig.horizon||10);}$('analysisHorizon').onchange=()=>{if($('backtestStep'))$('backtestStep').value=$('analysisHorizon').value;};
+$('manualTradeTab').onclick=()=>setTradeEntryPane('manual');$('csvTradeTab').onclick=()=>setTradeEntryPane('csv');
+$('tradeImportFile').onchange=async e=>{const file=e.target.files?.[0];e.target.value='';if(file)await prepareTradeCsvImport(id,file);};
+$('tradeAuditRun').onclick=()=>runTradeSourceAudit(id);$('tradeAuditDownload').onclick=downloadTradeSourceAudit;$('downloadTradeTemplate').onclick=downloadTradeCsvTemplate;
+$('commitTradeImport').onclick=()=>commitTradeCsvImport(id);
+} 
+function setTradeEntryPane(which){
+  const isCsv=which==='csv';$('manualTradePane').classList.toggle('hidden',isCsv);$('csvTradePane').classList.toggle('hidden',!isCsv);
+  $('manualTradeTab').classList.toggle('active',!isCsv);$('csvTradeTab').classList.toggle('active',isCsv);
+  $('manualTradeTab').setAttribute('aria-selected',String(!isCsv));$('csvTradeTab').setAttribute('aria-selected',String(isCsv));
+}
+function downloadTradeCsvTemplate(){
+  const content='date,side,qty,price,fees,note,symbol\r\n';
+  const blob=new Blob(['\ufeff',content],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='pattern_lab_trade_template.csv';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+}
+let lastTradeSourceAudit=null;
+function auditNormalizeKey(t){return [t.side,Number(t.qty).toFixed(6),Number(t.price).toFixed(4)].join('|');}
+function auditDateDistance(a,b){const x=Date.parse(a+'T00:00:00Z'),y=Date.parse(b+'T00:00:00Z');return Number.isFinite(x)&&Number.isFinite(y)?Math.abs(x-y)/86400000:Infinity;}
+function sourceAuditMatch(sources,existing){
+ const used=new Set(), results=[];
+ // Never treat multiple distinct fills as a single match: each source record can match one ledger trade.
+ const ordered=sources.slice().sort((a,b)=>a.date.localeCompare(b.date)||a.source.localeCompare(b.source)||a.line-b.line);
+ // First collapse cross-file sources conservatively; same-file repeats remain distinct.
+ const groups=[];
+ for(const t of ordered){
+  let match=null;
+  for(const g of groups){if(g.files.has(t.source))continue;if(g.side!==t.side||Math.abs(g.qty-t.qty)>1e-6||Math.abs(g.price-t.price)>0.011)continue;
+   if(auditDateDistance(g.date,t.date)>7)continue;
+   match=g;break;}
+  if(match){match.files.add(t.source);match.items.push(t);match.aliasDates.add(t.date);}
+  else groups.push({date:t.date,side:t.side,qty:t.qty,price:t.price,files:new Set([t.source]),items:[t],aliasDates:new Set([t.date])});
+ }
+ const base=existing.slice().sort((a,b)=>a.date.localeCompare(b.date));
+ for(const g of groups){
+  const options=base.map((t,i)=>({t,i,days:Math.min(...[...g.aliasDates].map(d=>auditDateDistance(t.date,d)))}))
+   .filter(o=>!used.has(o.i)&&o.t.side===g.side&&Math.abs(Number(o.t.qty)-g.qty)<1e-6&&Math.abs(Number(o.t.price)-g.price)<0.011&&o.days<=7)
+   .sort((a,b)=>a.days-b.days);
+  const exact=options.filter(o=>o.days===0);
+  let status,matched=null;
+  if(exact.length===1){status='일치';matched=exact[0];}
+  else if(exact.length>1||options.length>1){status='유사 거래 · 확인 필요';}
+  else if(options.length===1){status='날짜 차이 · 확인 필요';matched=options[0];}
+  else status='원장 누락 후보';
+  if(matched)used.add(matched.i);
+  results.push({date:g.date,side:g.side,qty:g.qty,price:g.price,files:[...g.files],sourceRows:g.items.map(t=>({file:t.source,line:t.line,date:t.date,fees:t.fees})),status,ledgerId:matched?.t.id||null});
+ }
+ return {rows:results,ledgerOnly:base.filter((t,i)=>!used.has(i)).map(t=>({date:t.date,side:t.side,qty:t.qty,price:t.price,id:t.id})),summary:{sourceTrades:sources.length,uniqueGroups:groups.length,exact:results.filter(x=>x.status==='일치').length,review:results.filter(x=>x.status.includes('확인 필요')).length,missing:results.filter(x=>x.status==='원장 누락 후보').length,ledgerOnly:base.length-used.size}};
+}
+async function readAuditFile(file){
+ const buffer=await file.arrayBuffer();let text;
+ try{text=new TextDecoder('utf-8',{fatal:true}).decode(buffer);}catch{ text=new TextDecoder('euc-kr',{fatal:true}).decode(buffer); }
+ const m=parseCsvMatrix(text.replace(/^\uFEFF/,''));const compact=v=>String(v??'').replace(/\s/g,'');const cell=(r,c)=>String(m[r]?.[c]??'').trim();
+ const kiwoom=/^Version\s*=\s*1\.0/i.test(cell(0,0));
+ const order=kiwoom&&compact(cell(1,0))==='주문일자'&&compact(cell(2,0))==='주문시간';
+ const ledger=kiwoom&&compact(cell(1,0))==='거래일자'&&compact(cell(2,0))==='종목코드';
+ const entries=[];let skipped=0;
+ if(order){const h1=m[1]||[],h2=m[2]||[];const find=(h,k)=>h.findIndex(x=>compact(x)===k);const si=find(h2,'매도수'),qi=find(h1,'체결수량'),pi=find(h2,'체결단가'),sy=find(h1,'종목번호');if([si,qi,pi,sy].some(x=>x<0))throw Error(`${file.name}: 주문·체결 헤더 오류`);
+ for(let r=3;r<m.length;r++){if(!/^\d{4}[-/]\d{1,2}[-/]\d{1,2}$/.test(cell(r,0))||!/^\d{1,2}:\d{2}:\d{2}$/.test(cell(r+1,0)))continue;
+ const dir=compact(cell(r+1,si)),side=dir==='매수'?'BUY':dir==='매도'?'SELL':'',qty=csvNumber(cell(r,qi)),price=csvNumber(cell(r+1,pi));if(!side||!(qty>0)||!(price>0)){skipped++;r++;continue;}
+ entries.push({date:normalizeTradeDate(cell(r,0)),side,qty,price,fees:0,symbol:cell(r,sy).replace(/^['"]+/,'').toUpperCase(),source:file.name,line:r+1});r++;}
+ }else if(ledger){const h1=m[1]||[],h2=m[2]||[],h3=m[3]||[];const qi=h1.findIndex(x=>compact(x)==='거래수량'),pi=h2.findIndex(x=>compact(x).includes('거래단가')),fi=h3.findIndex(x=>compact(x)==='수수료(외)');if([qi,pi,fi].some(x=>x<0))throw Error(`${file.name}: 거래·정산 헤더 오류`);
+ for(let r=4;r<m.length;r++){if(!/^\d{4}[-/]\d{1,2}[-/]\d{1,2}$/.test(cell(r,0)))continue;
+ if(compact(cell(r,1))!=='매매'){skipped++;r+=2;continue;}const dir=compact(cell(r+1,1)),side=dir==='매수'?'BUY':dir==='매도'?'SELL':'',qty=csvNumber(cell(r,qi)),price=csvNumber(cell(r+1,pi)),fees=csvNumber(cell(r+2,fi));if(!side||!(qty>0)||!(price>0)){skipped++;r+=2;continue;}
+ entries.push({date:normalizeTradeDate(cell(r,0)),side,qty,price,fees:Number.isFinite(fees)?fees:0,symbol:cell(r+1,0).replace(/^['"]+/,'').toUpperCase(),source:file.name,line:r+1});r+=2;}
+ }else{const h=(m[0]||[]).map(x=>compact(x).toLowerCase());const idx=keys=>h.findIndex(x=>keys.includes(x));const di=idx(['date','거래일','거래일자','날짜']),si=idx(['side','유형','구분','매매구분']),qi=idx(['qty','수량','거래수량']),pi=idx(['price','체결가','체결단가']),sy=idx(['symbol','종목코드','종목번호']);if([di,si,qi,pi].some(x=>x<0))throw Error(`${file.name}: 지원하지 않는 형식`);for(let r=1;r<m.length;r++){const sideRaw=compact(cell(r,si)).toUpperCase(),side=['BUY','매수'].includes(sideRaw)?'BUY':['SELL','매도'].includes(sideRaw)?'SELL':'',qty=csvNumber(cell(r,qi)),price=csvNumber(cell(r,pi)),date=normalizeTradeDate(cell(r,di));if(!side||!date||!(qty>0)||!(price>0)){skipped++;continue;}entries.push({date,side,qty,price,fees:0,symbol:sy>=0?cell(r,sy).toUpperCase():'',source:file.name,line:r+1});}}
+ return {entries,skipped,format:order?'주문·체결':ledger?'거래·정산':'표준 CSV'};
+}
+async function runTradeSourceAudit(id){
+ const input=$('tradeAuditFiles'),files=[...(input?.files||[])],out=$('tradeAuditResults');if(!files.length){toast('대조할 CSV를 하나 이상 선택하세요.');return;}
+ out.textContent='CSV 원본과 저장 원장을 대조하고 있습니다…';$('tradeAuditDownload').disabled=true;
+ try{const sec=security(id);const entries=[],filesInfo=[];for(const f of files){const x=await readAuditFile(f);entries.push(...x.entries.filter(t=>!t.symbol||t.symbol===sec.symbol.toUpperCase()||t.symbol===sec.name.toUpperCase()));filesInfo.push({name:f.name,format:x.format,parsed:x.entries.length,skipped:x.skipped});}
+ const audit=sourceAuditMatch(entries,stockTrades(id));lastTradeSourceAudit={createdAt:new Date().toISOString(),securityId:id,files:filesInfo,...audit};
+ const {summary:z,rows}=audit;
+ const display=rows.filter(t=>t.status!=='일치').slice(0,100);
+ out.innerHTML=`<strong>원본 대조 결과: 일치 ${z.exact}건 · 원장 누락 후보 ${z.missing}건 · 확인 필요 ${z.review}건 · 원장에만 존재 ${z.ledgerOnly}건</strong><div class="helper">주문일·정산일은 최대 7일 차이를 유사 후보로 확인합니다. 유사 후보는 자동으로 동일 거래라고 확정하지 않습니다. 같은 수량과 가격이 반복 체결됐을 수도 있습니다. <b>이 결과만으로 거래를 자동 추가·삭제하지 않습니다.</b></div><div class="table-wrap" style="margin-top:8px"><table><thead><tr><th>날짜</th><th>방향</th><th>수량</th><th>가격</th><th>상태</th><th>원본</th></tr></thead><tbody>${display.map(t=>`<tr><td>${esc(t.date)}</td><td>${t.side==='SELL'?'매도':'매수'}</td><td>${t.qty}</td><td>${fmt(t.price,2)}</td><td>${esc(t.status)}</td><td>${esc(t.files.join(', '))}</td></tr>`).join('')||'<tr><td colspan="6">차이 후보 없음</td></tr>'}</tbody></table></div><div class="helper">최대 100건 표시 · 대조 결과 전체는 JSON으로 다운로드할 수 있습니다.</div>`;
+ $('tradeAuditDownload').disabled=false;
+ }catch(e){lastTradeSourceAudit=null;out.textContent='대조 실패: '+e.message;out.className='status error';toast('CSV 대조 실패: '+e.message);}
+}
+function downloadTradeSourceAudit(){if(!lastTradeSourceAudit)return;const blob=new Blob([JSON.stringify(lastTradeSourceAudit,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='pattern_lab_trade_source_audit.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+function parseCsvMatrix(text){
+  // 쉼표, 탭, 세미콜론 구분자 자동 감지. CSV 내부 따옴표와 줄바꿈을 보존합니다.
+  const sample=String(text||'').replace(/^\uFEFF/,'').split(/\r?\n/).filter(x=>x.trim()).slice(0,8);
+  const counts={',':0,'\t':0,';':0};
+  for(const line of sample){
+    let quoted=false;
+    for(let i=0;i<line.length;i++){
+      const ch=line[i];
+      if(ch==='"'&&line[i+1]==='"'&&quoted){i++;continue;}
+      if(ch==='"'){quoted=!quoted;continue;}
+      if(!quoted&&(ch===','||ch==='\t'||ch===';'))counts[ch]++;
+    }
+  }
+  const delim=Object.keys(counts).sort((a,b)=>counts[b]-counts[a])[0];
+  const rows=[];let row=[],cell='',quoted=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(ch==='"'&&quoted&&text[i+1]==='"'){cell+='"';i++;}
+    else if(ch==='"'){quoted=!quoted;}
+    else if(ch===delim&&!quoted){row.push(cell);cell='';}
+    else if((ch==='\n'||ch==='\r')&&!quoted){
+      if(ch==='\r'&&text[i+1]==='\n')i++;
+      row.push(cell);
+      if(row.some(v=>String(v).trim()!==''))rows.push(row);
+      row=[];cell='';
+    }else cell+=ch;
+  }
+  row.push(cell);if(row.some(v=>String(v).trim()!==''))rows.push(row);
+  return rows;
+}
+function normalizeTradeDate(value){
+  let v=String(value??'').trim().replace(/[./]/g,'-');
+  if(/^\d{8}$/.test(v))v=`${v.slice(0,4)}-${v.slice(4,6)}-${v.slice(6,8)}`;
+  const iso=v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);if(!iso)return '';
+  const date=`${iso[1]}-${iso[2].padStart(2,'0')}-${iso[3].padStart(2,'0')}`;const d=new Date(date+'T00:00:00Z');
+  return Number.isNaN(d.getTime())||d.toISOString().slice(0,10)!==date?'':date;
+}
+function csvNumber(value){const v=String(value??'').trim().replace(/[,$₩원\s]/g,'');if(!v)return NaN;return Number(v);}
+function tradeFingerprint(t){return [t.securityId,t.date,t.side,n(t.qty).toFixed(8),n(t.price).toFixed(8),n(t.fees).toFixed(8)].join('|');}
+function checkTradeSequence(trades){let qty=0;const invalid=[];const ordered=trades.slice().sort((a,b)=>String(a.date).localeCompare(String(b.date))||String(a.createdAt||'').localeCompare(String(b.createdAt||'')));for(const t of ordered){const q=n(t.qty);if(t.side==='BUY')qty+=q;else if(q>qty+1e-7)invalid.push(t.id);else qty-=q;}return invalid;}
+function renderTradeCsvPreview(pending){
+  const tbody=$('tradeImportPreview'),count=$('tradeImportCount'),btn=$('commitTradeImport');if(!tbody)return;
+  const shown=pending?.previewRows||[];count.textContent=`${shown.length}행`;
+  if(!shown.length){tbody.innerHTML='<tr><td colspan="7"><div class="empty">미리보기 데이터가 없습니다.</div></td></tr>';btn.disabled=true;return;}
+  tbody.innerHTML=shown.slice(0,100).map(r=>{const s=r.status||'검사 대기';const c=s==='가져오기 가능'?'good':(s.startsWith('중복')?'skip':(s==='검사 대기'?'':'bad'));return `<tr><td>${r.line}</td><td>${esc(r.date||'—')}</td><td>${r.side==='BUY'?'매수':r.side==='SELL'?'매도':esc(r.rawSide||'—')}</td><td>${Number.isFinite(r.qty)?fmt(r.qty,6).replace(/0+$/,'').replace(/\.$/,''):'—'}</td><td>${Number.isFinite(r.price)?fmt(r.price,4):'—'}</td><td>${Number.isFinite(r.fees)?fmt(r.fees,4):'—'}</td><td><span class="trade-import-status ${c}">${esc(s)}</span></td></tr>`;}).join('');
+  btn.disabled=!(pending.validRows&&pending.validRows.length>0);if(shown.length>100){const note=document.createElement('tr');note.innerHTML=`<td colspan="7"><div class="helper">총 ${shown.length}행 중 첫 100행을 표시합니다.</div></td>`;tbody.appendChild(note);}
+}
+async function prepareTradeCsvImport(id,file){
+  pendingTradeImport=null;$('commitTradeImport').disabled=true;$('tradeImportStatus').textContent='CSV 파일을 읽고 데이터를 검사하는 중…';
+  try{
+    const buffer=await file.arrayBuffer();
+    // Read UTF-8 strictly first; CP949/EUC-KR exports otherwise become replacement characters.
+    let text='',decodeUsed='utf-8';
+    try{text=new TextDecoder('utf-8',{fatal:true}).decode(buffer);}
+    catch(e){text=new TextDecoder('euc-kr',{fatal:true}).decode(buffer);decodeUsed='euc-kr (CP949)';}
+    text=text.replace(/^\uFEFF/,'');
+    let matrix=parseCsvMatrix(text);
+    if(matrix.length<2)throw new Error('헤더와 거래 데이터가 들어 있는 CSV가 필요합니다.');
+    // Kiwoom has multiple Version=1.0 layouts. Detect using the header columns,
+    // never a filename; all importer outputs are the same normalized trade schema.
+    const cell=(r,c)=>String(matrix[r]?.[c]??'').replace(/^\uFEFF/,'').trim();
+    const compact=(v)=>String(v??'').replace(/\s/g,'');
+    const head1=matrix[1]||[],head2=matrix[2]||[];
+    const isKiwoom=/^Version\s*=\s*1\.0/i.test(cell(0,0));
+    const isOrder=isKiwoom&&compact(head1[0])==='주문일자'&&compact(head2[0])==='주문시간';
+    const isLedger=isKiwoom&&compact(head1[0])==='거래일자'&&compact(head2[0])==='종목코드'&&compact(cell(3,0))==='거래소';
+    const isOrderDate=(v)=>/^\d{4}[-/]\d{1,2}[-/]\d{1,2}$/.test(v);
+    const normalized=[['date','side','qty','price','fees','note','symbol']];
+    let skippedUnfilled=0,skippedNonTrades=0,parsedItems=0;
+    if(isOrder){
+      const symCol=head1.findIndex(h=>compact(h)==='종목번호');
+      const sideCol=head2.findIndex(h=>compact(h)==='매도수');
+      const qtyCol=head1.findIndex(h=>compact(h)==='체결수량');
+      const priceCol=head2.findIndex(h=>compact(h)==='체결단가');
+      if([symCol,sideCol,qtyCol,priceCol].some(i=>i<0))throw new Error('주문·체결 CSV의 필수 헤더를 찾지 못했습니다.');
+      for(let r=3;r<matrix.length;){
+        if(!isOrderDate(cell(r,0))||!/^\d{1,2}:\d{2}:\d{2}$/.test(cell(r+1,0))){r++;continue;}
+        parsedItems++;
+        const sideRaw=compact(cell(r+1,sideCol));
+        const side=sideRaw==='매수'?'BUY':sideRaw==='매도'?'SELL':'';
+        const qty=csvNumber(cell(r,qtyCol)),price=csvNumber(cell(r+1,priceCol));
+        if(!side||!Number.isFinite(qty)||qty<=0||!Number.isFinite(price)||price<=0){skippedUnfilled++;r+=2;continue;}
+        normalized.push([normalizeTradeDate(cell(r,0)),side,String(qty),String(price),'0',`키움 주문·체결 (${cell(r+1,0)})`,cell(r,symCol).replace(/^['"]+/,'').toUpperCase()]);
+        r+=2;
+      }
+    }else if(isLedger){
+      const qtyCol=head1.findIndex(h=>compact(h)==='거래수량');
+      const priceCol=head2.findIndex(h=>compact(h).includes('거래단가'));
+      const feeCol=(matrix[3]||[]).findIndex(h=>compact(h)==='수수료(외)');
+      if([qtyCol,priceCol,feeCol].some(i=>i<0))throw new Error('거래·정산 CSV의 필수 헤더를 찾지 못했습니다.');
+      for(let r=4;r<matrix.length;){
+        if(!isOrderDate(cell(r,0))){r++;continue;}
+        if(r+2>=matrix.length)throw new Error(`마지막 거래의 상세 3행이 불완전합니다 (CSV ${r+1}행).`);
+        parsedItems++;
+        if(compact(cell(r,1))!=='매매'){skippedNonTrades++;r+=3;continue;}
+        const sideRaw=compact(cell(r+1,1));
+        const side=sideRaw==='매수'?'BUY':sideRaw==='매도'?'SELL':'';
+        const qty=csvNumber(cell(r,qtyCol)),price=csvNumber(cell(r+1,priceCol)),fees=csvNumber(cell(r+2,feeCol));
+        if(!side||!Number.isFinite(qty)||qty<=0||!Number.isFinite(price)||price<=0||!Number.isFinite(fees)||fees<0){skippedUnfilled++;r+=3;continue;}
+        normalized.push([normalizeTradeDate(cell(r,0)),side,String(qty),String(price),String(fees),`키움 거래·정산`,cell(r+1,0).replace(/^['"]+/,'').toUpperCase()]);
+        r+=3;
+      }
+    }
+    if(isOrder||isLedger){
+      if(!parsedItems)throw new Error('키움증권 CSV의 거래 데이터 행을 찾지 못했습니다.');
+      if(normalized.length<2)throw new Error(`유효한 매수·매도가 없습니다 (검사 ${parsedItems}건, 제외 ${skippedUnfilled+skippedNonTrades}건).`);
+      matrix=normalized;
+    }
+    const headers=matrix[0].map(v=>String(v).trim().toLowerCase().replace(/[\s_\-\/()]/g,''));
+    const idx=(aliases)=>headers.findIndex(h=>aliases.includes(h));
+    const dateI=idx(['date','datetime','tradedate','transactiondate','일자','날짜','거래일','거래일자','체결일','체결일자']);
+    const sideI=idx(['side','type','action','buysell','매매구분','매수매도','매수매도유형','매매유형','거래유형','구분','유형','거래구분']);
+    const qtyI=idx(['qty','quantity','shares','filledqty','executionqty','수량','주수','체결수량','거래수량','매매수량']);
+    const priceI=idx(['price','fillprice','executionprice','avgprice','unitprice','체결가','체결단가','체결가격','단가','매매단가']);
+    const feesI=idx(['fees','fee','commission','commissionfees','수수료','수수료비용','비용','거래비용','제세금','세금','수수료세금']);
+    const noteI=idx(['note','memo','description','비고','메모','내용']);
+    const symbolI=idx(['symbol','ticker','code','stockcode','종목코드','종목번호','종목명','종목','티커']);
+    if(dateI<0||sideI<0||qtyI<0||priceI<0)throw new Error('필수 열을 찾지 못했습니다. 거래일(date), 유형(side), 수량(qty), 체결가(price) 열이 필요합니다.');
+    const sec=security(id);if(!sec)throw new Error('종목 탭을 다시 선택해 주세요.');
+    const existing=stockTrades(id);const existingInvalid=checkTradeSequence(existing);
+    const existingFps=new Set(existing.map(tradeFingerprint));const seenFps=new Set(existingFps);const previewRows=[],candidates=[];let validBase=0,duplicateCount=0,errorCount=0;
+    for(let j=1;j<matrix.length;j++){
+      const cells=matrix[j],line=j+1;const rawSide=String(cells[sideI]??'').trim();const sideText=rawSide.toUpperCase().replace(/\s/g,'');let side='';
+      if(['BUY','B','매수','매입','PURCHASE'].includes(sideText))side='BUY';else if(['SELL','S','매도','매출','SALE'].includes(sideText))side='SELL';
+      const date=normalizeTradeDate(cells[dateI]);const qty=csvNumber(cells[qtyI]),price=csvNumber(cells[priceI]);const fees=feesI<0||String(cells[feesI]??'').trim()===''?0:csvNumber(cells[feesI]);const note=noteI<0?'':String(cells[noteI]??'').trim().slice(0,120);const providedSymbol=symbolI<0?'':String(cells[symbolI]??'').trim().toUpperCase().replace(/^\$/,'');
+      const preview={line,date,side,rawSide,qty,price,fees,note,status:'검사 대기'};previewRows.push(preview);
+      let err='';if(!date)err='거래일 형식 오류';else if(!side)err='유형은 BUY/SELL 또는 매수/매도';else if(!Number.isFinite(qty)||qty<=0)err='수량은 0보다 커야 함';else if(!Number.isFinite(price)||price<=0)err='체결가는 0보다 커야 함';else if(!Number.isFinite(fees)||fees<0)err='수수료는 0 이상';else if(providedSymbol&&providedSymbol!==sec.symbol.toUpperCase()&&providedSymbol!==sec.name.toUpperCase())err=`다른 종목(${providedSymbol})`;
+      if(err){preview.status='오류: '+err;errorCount++;continue;}
+      const t={id:`CSV-${id}-${line}-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,securityId:id,date,side,qty,price,fees,note,createdAt:new Date(Date.now()+j*10).toISOString(),_csvLine:line};
+      const fp=tradeFingerprint(t);if(seenFps.has(fp)){preview.status='중복 - 제외';duplicateCount++;continue;}seenFps.add(fp);preview._tradeId=t.id;candidates.push(t);validBase++;
+    }
+    if(existingInvalid.length){for(const r of previewRows)if(r.status==='검사 대기')r.status='오류: 기존 매도 기록을 먼저 확인';throw Object.assign(new Error('기존 매매 기록에서 보유 수량을 초과한 매도가 발견됐습니다. 기존 거래를 수정한 뒤 다시 가져와 주세요.'),{partial:{id,fileName:file.name,previewRows,validRows:[],duplicateCount,errorCount:previewRows.filter(r=>r.status.startsWith('오류')).length}});}
+    let validRows=candidates.slice();let invalidImportIds=new Set();
+    for(let pass=0;pass<Math.max(1,candidates.length+1);pass++){
+      const all=existing.concat(validRows);const invalidIds=new Set(checkTradeSequence(all));const invalidNew=validRows.filter(t=>invalidIds.has(t.id));if(!invalidNew.length)break;
+      invalidNew.forEach(t=>{invalidImportIds.add(t.id);const pr=previewRows.find(r=>r.line===t._csvLine);if(pr)pr.status='오류: 보유 수량보다 매도가 많음';});
+      validRows=validRows.filter(t=>!invalidIds.has(t.id));
+    }
+    for(const r of previewRows)if(r.status==='검사 대기')r.status='가져오기 가능';
+    errorCount=previewRows.filter(r=>r.status.startsWith('오류')).length;duplicateCount=previewRows.filter(r=>r.status.startsWith('중복')).length;
+    pendingTradeImport={securityId:id,fileName:file.name,previewRows,validRows,duplicateCount,errorCount};renderTradeCsvPreview(pendingTradeImport);
+    $('tradeImportStatus').textContent=`${file.name}: 총 ${previewRows.length}행 · 가져오기 가능 ${validRows.length}건 · 중복 ${duplicateCount}건 · 오류/제외 ${errorCount}건${skippedUnfilled?` · 미체결/불완전 ${skippedUnfilled}건 제외`:''}${skippedNonTrades?` · 매매 외 거래 ${skippedNonTrades}건 제외`:''}${typeof decodeUsed!=='undefined'?` · 인코딩 ${decodeUsed}`:''}. 가져오기 버튼을 누르기 전까지 기록은 저장되지 않습니다.`;
+    $('tradeImportStatus').className='status '+(validRows.length?'ok':'');if(!validRows.length)toast('가져올 수 있는 거래가 없습니다. 미리보기 상태를 확인해 주세요.');
+  }catch(e){
+    pendingTradeImport=e.partial||null;if(pendingTradeImport)renderTradeCsvPreview(pendingTradeImport);else{$('tradeImportPreview').innerHTML=`<tr><td colspan="7"><div class="empty">${esc(e.message)}</div></td></tr>`;$('tradeImportCount').textContent='오류';}
+    $('tradeImportStatus').textContent=e.message;$('tradeImportStatus').className='status error';$('commitTradeImport').disabled=true;toast('CSV 검사 실패: '+e.message);
+  }
+}
+function commitTradeCsvImport(id){
+  const p=pendingTradeImport;if(!p||p.securityId!==id||!p.validRows?.length){toast('가져올 수 있는 거래가 없습니다.');return;}
+  const liveFps=new Set(stockTrades(id).map(tradeFingerprint));const tradesToAdd=[];let duplicateNow=0;
+  for(const t of p.validRows){if(liveFps.has(tradeFingerprint(t))){duplicateNow++;continue;}tradesToAdd.push({...t});}
+  const existing=stockTrades(id);if(checkTradeSequence(existing).length){toast('기존 매매 기록을 먼저 수정해 주세요.');return;}
+  const invalid=checkTradeSequence(existing.concat(tradesToAdd));if(invalid.length){toast('매도 수량 검증에 실패했습니다. 미리보기를 다시 확인해 주세요.');return;}
+  appState.trades.push(...tradesToAdd);const imported=tradesToAdd.length;const skippedDup=p.duplicateCount+duplicateNow;const skippedErr=p.errorCount;pendingTradeImport=null;saveState();render();toast(`CSV 가져오기 완료: ${imported}건 등록 · 중복 ${skippedDup}건 및 오류 ${skippedErr}건 제외`);
+}
+function tradeRowsHTML(id){const ts=stockTrades(id),s=security(id),p=calculatePosition(id);if(!ts.length)return `<tr><td colspan="9"><div class="empty"><strong>아직 매매 기록이 없습니다.</strong>위에서 매수·매도 거래를 추가하면 평단과 보유 수량이 자동 계산됩니다.</div></td></tr>`;let runningQty=0,runningCost=0,realizedById={};for(const t of ts){if(t.side==='BUY'){runningQty+=n(t.qty);runningCost+=n(t.qty)*n(t.price)+n(t.fees);}else if(n(t.qty)<=runningQty+1e-7){const avg=runningQty>0?runningCost/runningQty:0;realizedById[t.id]=n(t.qty)*n(t.price)-n(t.fees)-avg*n(t.qty);runningQty-=n(t.qty);runningCost-=avg*n(t.qty);if(runningQty<1e-7){runningQty=0;runningCost=0;}}}
+return ts.slice().reverse().map(t=>`<tr><td><input type="checkbox" class="trade-row-select" data-trade-select="${esc(t.id)}" aria-label="${esc(t.date)} 거래 선택"></td><td>${esc(t.date)}</td><td><span class="badge ${t.side==='BUY'?'done':'pending'}">${t.side==='BUY'?'매수':'매도'}</span></td><td>${fmt(n(t.qty),4).replace(/\.0+$/,'')}</td><td>${money(n(t.price),curr(s))}</td><td>${money(n(t.fees),curr(s))}</td><td class="${cls(realizedById[t.id])}">${t.side==='SELL'?signedMoney(realizedById[t.id],curr(s)):'—'}</td><td title="${esc(t.note||'')}">${esc(t.note||'—')}</td><td><div class="form-actions"><button class="btn small" data-edit-trade="${esc(t.id)}">수정</button><button class="btn small danger" data-delete-trade="${esc(t.id)}">삭제</button></div></td></tr>`).join('');}
+function predictionRowsHTML(id){const ps=appState.predictions.filter(p=>p.securityId===id&&!p.demo).slice().sort((a,b)=>b.createdAt.localeCompare(a.createdAt));if(!ps.length)return `<tr><td colspan="8"><div class="empty">아직 저장한 예측이 없습니다. 과거 패턴 분석 후 예측을 저장할 수 있습니다.</div></td></tr>`;return ps.slice(0,50).map(p=>`<tr><td>${esc(p.signalDate)}</td><td>${p.horizon}일</td><td>${classLabel(p.predClass)}</td><td>${fmt(p.pUp,0)}% / ${fmt(p.pDown,0)}% / ${fmt(p.pFlat,0)}%</td><td>${p.sampleCount}</td><td>${p.resolved?`<span class="${cls(p.actualReturn)}">${pct(p.actualReturn)}</span>`:'대기 중'}</td><td>${p.resolved?`<span class="badge ${p.match?'done':'pending'}">${p.match?'일치':'불일치'}</span>`:'—'}</td><td><button class="btn small" onclick="viewPrediction('${p.id}')">조회</button> <button class="btn small" onclick="editPrediction('${p.id}')">메모</button> <button class="btn small" onclick="deletePrediction('${p.id}')">삭제</button></td></tr>`).join('');}
+function classLabel(c){return c==='up'?'상승':c==='down'?'하락':'보합';}
+function renderExistingAnalysis(id){const a=appState.lastAnalysis?.[id];if(!a)return `<div class="empty"><strong>아직 분석 결과가 없습니다.</strong>과거 일봉을 가져오거나 CSV를 불러온 다음 유사 패턴 분석을 실행하세요.</div>`;return analysisHTML(a);}
+function analysisHTML(a){return `<div class="subsection"><div class="subsection-head"><h4>유사 사례 기반 결과</h4><span class="badge">${a.sampleCount}개 표본</span></div><div class="chart-wrap">${makeChartSvg(a.rows||[])}<div class="chart-foot"><span>${esc(a.startDate||'')}</span><span>최근 종가 ${money(a.price,a.currency)}</span><span>${esc(a.endDate||'')}</span></div></div><div class="forecast-grid"><div class="forecast up"><span>상승 표본 비율</span><strong>${fmt(a.pUp,1)}%</strong><div class="forecast-bar"><i style="width:${a.pUp}%"></i></div></div><div class="forecast down"><span>하락 표본 비율</span><strong>${fmt(a.pDown,1)}%</strong><div class="forecast-bar"><i style="width:${a.pDown}%"></i></div></div><div class="forecast flat"><span>보합 표본 비율</span><strong>${fmt(a.pFlat,1)}%</strong><div class="forecast-bar"><i style="width:${a.pFlat}%"></i></div></div></div><div class="position-metrics" style="grid-template-columns:repeat(3,minmax(0,1fr))"><div class="position-metric"><span>평균 사후 수익률</span><strong class="${cls(a.expectedReturn)}">${pct(a.expectedReturn)}</strong><small>${a.horizon}거래일 기준</small></div><div class="position-metric"><span>유사도 평균 거리</span><strong>${fmt(a.avgDistance,2)}</strong><small>낮을수록 가깝습니다</small></div><div class="position-metric"><span>평가 상태</span><strong>${a.sampleCount>=30?'표본 주의':'초기 분석'}</strong><small>독립 검증이 필요합니다</small></div></div><div class="status">기준일 ${esc(a.signalDate)} · 이 결과는 유사 과거 사례의 분포이며 예측 보장은 아닙니다. 거래 비용, 체결 가격, 미래 시장 구조 변화는 별도로 고려해야 합니다.</div><div class="form-actions" style="margin-top:10px"><button class="btn primary" id="savePredictionBtn">이 예측 기록 저장</button></div></div>`;}
+function makeChartSvg(rows){if(!rows||rows.length<2)return '<div class="empty">표시할 차트 데이터가 없습니다.</div>';const view=rows.slice(-90);const vals=view.map(r=>n(r.close));const min=Math.min(...vals),max=Math.max(...vals),range=max-min||1;const pts=vals.map((v,i)=>`${8+i*984/(vals.length-1)},${148-(v-min)/range*125}`).join(' ');const start=money(vals[0],'USD'),end=money(vals.at(-1),'USD');return `<svg viewBox="0 0 1000 170" preserveAspectRatio="none" role="img" aria-label="최근 종가 추이"><line x1="8" y1="150" x2="992" y2="150" stroke="#dce7e1" stroke-width="1"/><line x1="8" y1="86" x2="992" y2="86" stroke="#dce7e1" stroke-dasharray="4 6" stroke-width="1"/><polyline points="${pts}" fill="none" stroke="#185c4b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/><circle cx="992" cy="${148-(vals.at(-1)-min)/range*125}" r="4" fill="#185c4b" vector-effect="non-scaling-stroke"/></svg>`;}
+function saveTradeForm(id){
+  const trade={id:editTradeId||`T-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,securityId:id,date:$('tradeDate').value,side:$('tradeSide').value,qty:n($('tradeQty').value),price:n($('tradePrice').value),fees:n($('tradeFees').value),note:$('tradeNote').value.trim(),createdAt:editTradeId?(appState.trades.find(t=>t.id===editTradeId)?.createdAt||new Date().toISOString()):new Date().toISOString()};
+  if(!trade.date||trade.qty<=0||trade.price<=0||trade.fees<0){toast('거래일, 수량, 체결가를 확인해 주세요.');return;}
+  // 같은 종목·거래일·유형·수량·체결가·수수료가 이미 있으면 수동 저장도 중복 차단.
+  const fingerprint=tradeFingerprint(trade);
+  const duplicate=appState.trades.some(t=>t.id!==trade.id&&tradeFingerprint(t)===fingerprint);
+  if(duplicate){toast('동일한 매매 기록이 이미 있습니다. 중복 저장을 건너뛰었습니다.');return;}
+  const candidate=appState.trades.filter(t=>t.id!==trade.id);candidate.push(trade);
+  const simulated=calculateTrades(candidate.filter(t=>t.securityId===id));
+  if(simulated.invalid.length){toast('해당 거래일의 보유 수량보다 매도 수량이 많습니다. 거래일과 매매 기록을 확인해 주세요.');return;}
+  appState.trades=candidate;editTradeId=null;saveState();render();toast('매매 기록을 저장하고 평단·수량을 다시 계산했습니다.');
+}
+function calculateTrades(trades){const ts=trades.slice().sort((a,b)=>a.date.localeCompare(b.date)||String(a.createdAt).localeCompare(String(b.createdAt)));let qty=0,cost=0,invalid=[];for(const t of ts){if(t.side==='BUY'){qty+=n(t.qty);cost+=n(t.qty)*n(t.price)+n(t.fees);}else{if(n(t.qty)>qty+1e-7){invalid.push(t);continue;}const avg=qty?cost/qty:0;qty-=n(t.qty);cost-=avg*n(t.qty);if(qty<1e-7){qty=0;cost=0;}}}return {qty,cost,invalid};}
+function deleteTrade(id){const t=appState.trades.find(x=>x.id===id);if(!t)return;appState.trades=appState.trades.filter(x=>x.id!==id);editTradeId=null;saveState();render();toast('매매 기록을 삭제했습니다.');}
+function openModal(title,html,buttons){$('modalTitle').textContent=title;$('modalContent').innerHTML=html;$('modalActions').innerHTML='';for(const item of buttons){const b=document.createElement('button');b.className='btn '+(item.primary?'primary':'');b.textContent=item.label;b.onclick=()=>{if(item.action)item.action();};$('modalActions').appendChild(b);}$('modalShade').classList.add('open');}
+function closeModal(){$('modalShade').classList.remove('open');}
+function openAddStock(){openModal('종목 추가',`<form id="addStockForm"><div class="field"><label for="newMarket">시장</label><select id="newMarket"><option value="US" selected>해외주식 · 미국주식/ETF</option><option value="KR">국내주식 · KRX</option></select></div><div class="field-row"><div class="field"><label for="newSymbol">종목코드 / 티커</label><input id="newSymbol" placeholder="SOXL 또는 005930" required maxlength="14"></div><div class="field"><label for="newName">표시 이름</label><input id="newName" placeholder="SOXL 또는 삼성전자" required maxlength="40"></div></div><div class="field" id="newExchangeWrap"><label for="newExchange">미국 거래소</label><select id="newExchange"><option value="AMS" selected>AMS · NYSE Arca / AMEX</option><option value="NAS">NAS · NASDAQ</option><option value="NYS">NYS · NYSE</option></select></div><div class="helper">등록 후 종목별 탭이 생깁니다. 기존 보유 주식은 거래일·수량·평단에 해당하는 매수 기록을 등록하세요.</div></form>`,[{label:'취소',action:closeModal},{label:'종목 추가',primary:true,action:()=>{const form=$('addStockForm');if(!form.reportValidity())return;const market=$('newMarket').value;let symbol=$('newSymbol').value.trim().toUpperCase();if(market==='KR'&&!/^\d{6}$/.test(symbol)){toast('국내 종목은 6자리 종목코드를 입력해 주세요.');return;}if(market==='US'&&!/^[A-Z][A-Z0-9.\-]{0,11}$/.test(symbol)){toast('미국 티커를 확인해 주세요.');return;}const id=market+':'+symbol;if(appState.securities.some(s=>s.id===id)){toast('이미 등록한 종목입니다. 해당 탭을 열어 주세요.');setView('stock',id);closeModal();return;}const s={id,market,symbol,name:$('newName').value.trim(),exchange:market==='KR'?'J':$('newExchange').value,currency:market==='KR'?'KRW':'USD'};appState.securities.push(s);appState.selectedId=id;appState.activeView='stock';saveState();closeModal();render();refreshQuoteQuiet(id);connectRealtime(true);toast(`${s.symbol} 종목 탭을 추가했습니다.`);}}]);$('newMarket').onchange=()=>{$('newExchangeWrap').classList.toggle('hidden',$('newMarket').value==='KR');$('newSymbol').placeholder=$('newMarket').value==='KR'?'005930':'SOXL';};$('newMarket').dispatchEvent(new Event('change'));}
+function openEditStock(id){const s=security(id);if(!s)return;openModal('종목 설정',`<form id="editStockForm"><div class="field"><label for="editName">표시 이름</label><input id="editName" value="${esc(s.name)}" maxlength="40" required></div>${s.market==='US'?`<div class="field"><label for="editExchange">미국 거래소</label><select id="editExchange"><option value="AMS" ${s.exchange==='AMS'?'selected':''}>AMS · NYSE Arca / AMEX</option><option value="NAS" ${s.exchange==='NAS'?'selected':''}>NAS · NASDAQ</option><option value="NYS" ${s.exchange==='NYS'?'selected':''}>NYS · NYSE</option></select></div>`:''}</form><div class="helper">종목코드 자체는 매매 기록과 연결되어 있어 여기서 변경할 수 없습니다.</div>`,[{label:'취소',action:closeModal},{label:'저장',primary:true,action:()=>{if(!$('editStockForm').reportValidity())return;s.name=$('editName').value.trim();if(s.market==='US')s.exchange=$('editExchange').value;saveState();closeModal();render();toast('종목 설정을 저장했습니다.');}}]);}
+function removeStock(id){const s=security(id);if(!s)return;if(appState.trades.some(t=>t.securityId===id)){toast('매매 기록이 있는 종목은 바로 삭제할 수 없습니다. 먼저 거래 기록을 백업하거나 모두 삭제해 주세요.');openModal('종목 삭제 안내',`<p>이 종목에는 매매 기록이 있습니다. 기록을 지우면 평단·수량·실현손익과 예측 검증의 근거가 사라집니다.</p><p>종목과 연결된 모든 거래·예측·시세를 정말 삭제할까요?</p>`,[{label:'취소',action:closeModal},{label:'기록 포함 삭제',primary:false,action:()=>{appState.securities=appState.securities.filter(x=>x.id!==id);appState.trades=appState.trades.filter(t=>t.securityId!==id);appState.predictions=appState.predictions.filter(p=>p.securityId!==id);delete appState.quotes[id];delete appState.marketData[id];if(appState.lastAnalysis)delete appState.lastAnalysis[id];appState.activeView='overview';appState.selectedId=null;saveState();closeModal();render();connectRealtime(true);toast('종목과 연결 기록을 삭제했습니다.');}}]);return;}if(!confirm(`${s.symbol} 종목 탭을 삭제할까요?`))return;appState.securities=appState.securities.filter(x=>x.id!==id);appState.activeView='overview';appState.selectedId=null;saveState();render();connectRealtime(true);}
+function openManualQuote(id){const s=security(id),q=quoteOf(id);openModal('현재가 직접 입력',`<form id="manualQuoteForm"><div class="field"><label for="manualPrice">현재가 (${curr(s)})</label><input id="manualPrice" type="number" min="0.000001" step="any" value="${q?.manual?esc(q.price):''}" required></div><div class="helper">직접 입력한 가격은 API 시세를 가져오기 전까지 평가손익 계산에 사용됩니다. 자동 조회가 성공하면 시세값이 업데이트됩니다.</div></form>`,[{label:'취소',action:closeModal},{label:'현재가 저장',primary:true,action:()=>{if(!$('manualQuoteForm').reportValidity())return;const price=n($('manualPrice').value);if(price<=0){toast('현재가를 확인해 주세요.');return;}appState.quotes[id]={price,change:NaN,changePct:NaN,fetchedAt:new Date().toISOString(),currency:curr(s),source:'수동 입력',manual:true};saveState();closeModal();render();toast('수동 현재가를 저장했습니다.');}}]);}
+async function api(path,options={}){let res;try{res=await fetch(path,{cache:'no-store',...options,headers:{'Content-Type':'application/json',...(options.headers||{})}});}catch(e){throw new Error('로컬 API 서버에 연결할 수 없습니다. ZIP 압축을 푼 뒤 start_windows.bat를 실행해 주세요.');}const body=await res.json().catch(()=>({error:'서버 응답을 읽을 수 없습니다.'}));if(!res.ok)throw new Error(body.error||`요청 실패 (${res.status})`);return body;}
+async function refreshApiStatus(){try{const st=await api('/api/status');$('apiBadge').textContent=st.configured?'API 연결 준비됨':'API 키 설정 필요';$('apiBadge').className='pill '+(st.configured?'green':'');$('apiStatusText').textContent=st.configured?`API 키가 이 PC에 저장되어 있습니다. ${st.cacheSymbols||0}개 종목의 과거 시세 캐시`:'한국투자증권 실전투자용 App Key와 App Secret을 입력하세요.';return st.configured;}catch(e){$('apiBadge').textContent='로컬 서버 실행 필요';$('apiStatusText').textContent=e.message;return false;}}
+async function saveApiSettings(e){e.preventDefault();const appkey=$('appKey').value.trim(),appsecret=$('appSecret').value.trim();if(!appkey||!appsecret){toast('App Key와 App Secret을 모두 입력해 주세요.');return;}const b=$('saveApiBtn');b.disabled=true;b.textContent='인증 확인 중…';try{const res=await api('/api/settings',{method:'POST',body:JSON.stringify({appkey,appsecret})});$('appSecret').value='';$('appKey').value='';toast(res.message||'API 키를 저장했습니다.');await refreshApiStatus();if(appState.selectedId)refreshQuoteQuiet(appState.selectedId);connectRealtime(true);}catch(err){toast(err.message);}finally{b.disabled=false;b.textContent='키 저장 및 인증 확인';}}
+async function refreshQuote(id,force=false){const s=security(id);if(!s)return;try{$('apiBadge').textContent='시세 조회 중…';const qs=new URLSearchParams({market:s.market,symbol:s.symbol,exchange:s.exchange||exchangeDefault(s.market),force:force?'1':'0'});const q=await api('/api/quote?'+qs.toString());appState.quotes[id]={...q,manual:false};saveState();updateQuotesUI();toast(`${s.symbol} 현재가를 갱신했습니다.`);}catch(e){toast(`${s.symbol} 시세 조회 실패: ${e.message}`);}}
+async function refreshAllQuotes(){if(!appState.securities.length){toast('먼저 종목을 추가해 주세요.');return;}const b=$('refreshAllBtn');b.disabled=true;b.textContent='갱신 중…';let ok=0,err=0;for(const s of appState.securities){try{const qs=new URLSearchParams({market:s.market,symbol:s.symbol,exchange:s.exchange||exchangeDefault(s.market),force:'1'});const q=await api('/api/quote?'+qs.toString());appState.quotes[s.id]={...q,manual:false};ok++;}catch(e){err++;}await new Promise(r=>setTimeout(r,250));}saveState();updateQuotesUI();b.disabled=false;b.textContent='현재가 전체 갱신';toast(`현재가 갱신 완료: 성공 ${ok}개 · 실패 ${err}개`);}
+async function loadHistoryFor(id){const s=security(id);if(!s)return;const days=n($('historyDays').value)||1095;$('historyStatus').textContent='과거 일봉을 API에서 불러오는 중…';try{const qs=new URLSearchParams({market:s.market,symbol:s.symbol,exchange:s.exchange||exchangeDefault(s.market),days:String(days),refresh:'1'});const result=await api('/api/history?'+qs.toString());const rows=normalizeRows(result.rows||[]);if(rows.length<25)throw new Error(`분석 가능한 과거 데이터가 부족합니다 (${rows.length}행).`);appState.marketData[id]=rows;resolvePredictions(id,rows);saveState();render();toast(`${s.symbol} 과거 데이터 ${rows.length}행을 불러왔습니다.`);}catch(e){$('historyStatus').textContent='과거 데이터 조회 실패: '+e.message;toast(e.message);}}
+function normalizeRows(rows){const byDate=new Map();for(const r of rows){const date=String(r.date||r.Date||'').slice(0,10),close=n(r.close??r.Close??r.stck_clpr??r.clos);if(!date||close<=0)continue;byDate.set(date,{date,open:n(r.open??r.Open)||close,high:n(r.high??r.High)||close,low:n(r.low??r.Low)||close,close,volume:n(r.volume??r.Volume)});}return Array.from(byDate.values()).sort((a,b)=>a.date.localeCompare(b.date));}
+function splitCSVLine(line){const out=[];let cur='',quoted=false;for(let i=0;i<line.length;i++){const ch=line[i];if(ch==='"'&&line[i+1]==='"'&&quoted){cur+='"';i++;}else if(ch==='"'){quoted=!quoted;}else if(ch===','&&!quoted){out.push(cur);cur='';}else cur+=ch;}out.push(cur);return out;}
+async function importCsvHistory(id,file){try{const text=(await file.text()).replace(/^\uFEFF/,'');const lines=text.split(/\r?\n/).filter(x=>x.trim());if(lines.length<3)throw new Error('CSV 행이 부족합니다.');const hdr=splitCSVLine(lines[0]).map(x=>x.trim().toLowerCase());const pick=(names)=>hdr.findIndex(h=>names.includes(h));const di=pick(['date','datetime','일자','날짜','stck_bsop_date']),oi=pick(['open','시가','stck_oprc']),hi=pick(['high','고가','stck_hgpr']),li=pick(['low','저가','stck_lwpr']),ci=pick(['close','종가','현재가','stck_clpr','clos']),vi=pick(['volume','거래량','acml_vol','tvol']);if(di<0||ci<0)throw new Error('CSV에서 날짜(Date)와 종가(Close) 열을 찾지 못했습니다.');const rows=[];for(const line of lines.slice(1)){const c=splitCSVLine(line),fixDate=String(c[di]||'').trim().replace(/[./]/g,'-').slice(0,10),date=/^\d{8}$/.test(fixDate)?`${fixDate.slice(0,4)}-${fixDate.slice(4,6)}-${fixDate.slice(6,8)}`:fixDate;const numVal=i=>i<0?0:n(String(c[i]||'').replace(/,/g,''));const close=numVal(ci);if(!date||close<=0)continue;rows.push({date,open:numVal(oi)||close,high:numVal(hi)||close,low:numVal(li)||close,close,volume:numVal(vi)});}const normalized=normalizeRows(rows);if(normalized.length<25)throw new Error(`분석할 데이터가 부족합니다 (${normalized.length}행). 최소 25행 이상 필요합니다.`);appState.marketData[id]=normalized;resolvePredictions(id,normalized);saveState();render();toast(`${file.name}: ${normalized.length}행을 불러왔습니다.`);}catch(e){toast('CSV 불러오기 실패: '+e.message);}}
+function featureRows(rows){const close=rows.map(r=>r.close),ret=close.map((v,i)=>i?Math.log(v/close[i-1]):0),out=[];for(let i=20;i<rows.length;i++){const r5=close[i]/close[i-5]-1,r20=close[i]/close[i-20]-1,window=ret.slice(i-19,i+1),mean=window.reduce((a,b)=>a+b,0)/window.length,vol=Math.sqrt(window.reduce((a,b)=>a+(b-mean)**2,0)/window.length);const ma20=close.slice(i-19,i+1).reduce((a,b)=>a+b,0)/20,maDev=close[i]/ma20-1;const diffs=close.slice(Math.max(1,i-14),i+1).map((v,j,arr)=>j===0?0:v/arr[j-1]-1).slice(1);const gains=diffs.reduce((a,b)=>a+Math.max(0,b),0),losses=diffs.reduce((a,b)=>a+Math.max(0,-b),0),rsi=losses===0?100:100-100/(1+gains/losses);const avgvol=i>=20?rows.slice(i-4,i+1).reduce((a,b)=>a+b.volume,0)/5:0,priorVol=i>=25?rows.slice(i-9,i-4).reduce((a,b)=>a+b.volume,0)/5:avgvol,volChange=avgvol>0&&priorVol>0?Math.log(avgvol/priorVol):0;out.push({index:i,vector:[r5,r20,vol,maDev,rsi/100,volChange]});}return out;}
+function backtestCommentBadge(label, tone, title=''){
+  const cls=tone==='good'?'comment-good':tone==='caution'?'comment-caution':'comment-neutral';
+  return `<span class="badge ${cls}"${title?` title="${esc(title)}"`:''}>${esc(label)}</span>`;
+}
+function metricLabelWithTip(label, tip, badgeHtml=''){
+  return `<div class="metric-head"><div class="label-wrap"><span>${label}</span><button type="button" class="tip-btn" title="${esc(tip)}" aria-label="${esc(label+' 설명: '+tip)}">?</button></div>${badgeHtml}</div>`;
+}
+function classifyBacktestMetric(type, value, aux={}){
+  if(type==='accuracy'){
+    if(value>=55)return {label:'양호',tone:'good',desc:'방향 분류 정확도가 비교적 안정적인 편입니다.'};
+    if(value>=45)return {label:'해석 유의',tone:'neutral',desc:'정확도가 애매한 구간이어서 다른 지표와 함께 봐야 합니다.'};
+    return {label:'주의',tone:'caution',desc:'정확도만 보면 신호 분류력이 약할 수 있습니다.'};
+  }
+  if(type==='compounded'){
+    if(value>0)return {label:'양호',tone:'good',desc:'백테스트 누적 수익률이 플러스입니다.'};
+    if(value>-10)return {label:'해석 유의',tone:'neutral',desc:'손익이 크지 않거나 약한 마이너스입니다. 표본과 낙폭을 함께 보세요.'};
+    return {label:'주의',tone:'caution',desc:'누적 수익률이 큰 폭의 마이너스입니다.'};
+  }
+  if(type==='mdd'){
+    if(value<=10)return {label:'양호',tone:'good',desc:'낙폭이 비교적 작은 편입니다.'};
+    if(value<=25)return {label:'해석 유의',tone:'neutral',desc:'낙폭이 중간 수준입니다. 실전 체감 변동성에 유의하세요.'};
+    return {label:'주의',tone:'caution',desc:'낙폭이 커서 실전 체감 난도가 높을 수 있습니다.'};
+  }
+  if(type==='avgStrategy'){
+    if(value>0)return {label:'양호',tone:'good',desc:'전략 평균 수익률이 플러스입니다.'};
+    if(value>-1)return {label:'해석 유의',tone:'neutral',desc:'평균 수익률이 0% 부근입니다. 일관성이 약할 수 있습니다.'};
+    return {label:'주의',tone:'caution',desc:'전략 평균 수익률이 마이너스입니다.'};
+  }
+  if(type==='overlap'){
+    if(aux.step>=aux.horizon)return {label:'양호',tone:'good',desc:'평가 구간 중첩이 크지 않은 설정입니다.'};
+    if(aux.step>=Math.max(1,Math.floor(aux.horizon/2)))return {label:'해석 유의',tone:'neutral',desc:'평가 구간이 일부 중첩될 수 있어 누적 수익률 해석에 주의가 필요합니다.'};
+    return {label:'주의',tone:'caution',desc:'평가 구간 중첩이 커서 결과가 서로 독립적이지 않을 수 있습니다.'};
+  }
+  return {label:'해석 유의',tone:'neutral',desc:''};
+}
+function setBacktestGuideMode(mode){
+  const simple=document.getElementById('backtestGuideSimple');
+  const detail=document.getElementById('backtestGuideDetail');
+  const btnSimple=document.getElementById('backtestGuideModeSimple');
+  const btnDetail=document.getElementById('backtestGuideModeDetail');
+  if(!simple||!detail)return;
+  simple.style.display=mode==='simple'?'block':'none';
+  detail.style.display=mode==='detail'?'block':'none';
+  if(btnSimple)btnSimple.classList.toggle('primary',mode==='simple');
+  if(btnDetail)btnDetail.classList.toggle('primary',mode==='detail');
+}
+function backtestInterpretationHTML({horizon,step,cost,testsCount,accuracy,compounded,maxDrawdown,avgActual,avgStrategy}){
+  const accuracyInfo=classifyBacktestMetric('accuracy',accuracy);
+  const compoundedInfo=classifyBacktestMetric('compounded',compounded);
+  const mddInfo=classifyBacktestMetric('mdd',maxDrawdown);
+  const avgInfo=classifyBacktestMetric('avgStrategy',avgStrategy);
+  const overlapInfo=classifyBacktestMetric('overlap',0,{step,horizon});
+  const accuracyText = accuracy>=55 ? '방향 구분력이 어느 정도 있는 편입니다.' : accuracy>=45 ? '무작위 대비 우위가 있는지 추가 확인이 필요합니다.' : '정확도만 보면 신호 구분력이 약할 수 있습니다.';
+  const returnText = compounded>0 ? '누적 기준으로는 전략이 플러스입니다.' : compounded<0 ? '누적 기준으로는 손실이 발생했습니다.' : '누적 기준 손익이 거의 없습니다.';
+  const drawdownText = maxDrawdown<=10 ? '낙폭이 비교적 작은 편입니다.' : maxDrawdown<=25 ? '중간 수준의 낙폭입니다.' : '변동성과 손실 구간이 큰 편입니다.';
+  return `<details open class="status" style="margin-top:12px"><summary style="cursor:pointer;font-weight:700">백테스트 지표 해석 가이드</summary><div class="helper" style="margin-top:10px">이 영역은 현재 화면에 보이는 지표를 어떻게 읽어야 하는지 설명합니다. 정확도 하나만 보지 말고 누적 수익률, 최대 낙폭, 평균 수익률을 함께 해석하는 것이 좋습니다.</div><div class="guide-toggle"><button type="button" class="btn primary" id="backtestGuideModeSimple" >간단 설명</button><button type="button" class="btn" id="backtestGuideModeDetail" >자세한 설명</button></div><div class="backtest-auto-comments"><strong style="font-size:10px;align-self:center">자동 코멘트</strong>${backtestCommentBadge(accuracyInfo.label,accuracyInfo.tone,'정확도: '+accuracyInfo.desc)}${backtestCommentBadge(compoundedInfo.label,compoundedInfo.tone,'누적 수익률: '+compoundedInfo.desc)}${backtestCommentBadge(mddInfo.label,mddInfo.tone,'MDD: '+mddInfo.desc)}${backtestCommentBadge(overlapInfo.label,overlapInfo.tone,'중첩 평가: '+overlapInfo.desc)}</div><div id="backtestGuideSimple" class="backtest-guide-section"><div class="backtest-guide-summary"><div class="position-metric"><span>현재 결과 빠른 해석</span><strong>${accuracy.toFixed(1)}% / ${pct(compounded)}</strong><small>${accuracyText} ${returnText}</small></div><div class="position-metric"><span>위험 빠른 해석</span><strong>${pct(-maxDrawdown)}</strong><small>${drawdownText} 평가 ${testsCount}건 · 비용 ${cost}% 가정</small></div></div><div class="helper" style="margin-top:10px"><strong>한 줄 요약</strong><br>정확도는 <strong>${accuracyInfo.label}</strong>, 누적 수익률은 <strong>${compoundedInfo.label}</strong>, 최대 낙폭은 <strong>${mddInfo.label}</strong>로 해석할 수 있습니다. 평가 간격 ${step}일과 예측 기간 ${horizon}일의 관계는 <strong>${overlapInfo.label}</strong>입니다.</div></div><div id="backtestGuideDetail" class="backtest-guide-section" style="display:none"><div class="table-wrap" style="margin-top:10px"><table style="min-width:760px"><thead><tr><th>지표</th><th>무엇을 뜻하나</th><th>보통 좋게 보는 방향</th><th>주의할 점</th></tr></thead><tbody><tr><td>방향 분류 정확도</td><td>예측 방향과 실제 방향이 일치한 비율입니다.</td><td>높을수록 좋지만 보통 50% 안팎이면 다른 지표와 함께 판단합니다.</td><td>상승장에서는 상승만 예측해도 높게 나올 수 있어 단독 판단이 어렵습니다.</td></tr><tr><td>전략 누적 수익률</td><td>비중첩 신호의 익일 시가 진입·기간 말 종가 청산을 이어 계산한 가상 원장 수익률입니다.</td><td>플러스이고, 같은 기간 시장 대비 덜 흔들리면 좋습니다.</td><td>평가 간격이 예측 기간보다 짧으면 구간이 겹쳐 실제보다 과장되거나 왜곡될 수 있습니다.</td></tr><tr><td>최대 낙폭(MDD)</td><td>백테스트 진행 중 고점 대비 가장 크게 밀린 손실 폭입니다.</td><td>절대값이 작을수록 좋습니다. 보통 10% 이내면 안정적, 20% 이상이면 변동성 주의가 필요합니다.</td><td>수익률이 좋아도 MDD가 크면 실전 체감 난도가 높습니다.</td></tr><tr><td>실제 평균 수익률</td><td>각 평가 구간에서 종목 자체가 ${horizon}거래일 동안 평균적으로 얼마나 움직였는지입니다.</td><td>전략 평균 수익률보다 기준선 역할을 합니다.</td><td>강한 상승장에서는 이것만으로도 높을 수 있어 전략의 우위와 구분해야 합니다.</td></tr><tr><td>전략 평균 수익률</td><td>예측 신호를 그대로 따랐을 때 1회당 평균 수익률입니다.</td><td>플러스이고 실제 평균 수익률보다 높으면 유리합니다.</td><td>몇 번의 큰 수익 또는 손실이 평균을 왜곡할 수 있으므로 최근 기록도 함께 봐야 합니다.</td></tr><tr><td>시장 국면별 적중률</td><td>실제 상승·하락·보합 국면별로 얼마나 잘 맞췄는지입니다.</td><td>상승장/하락장 모두 특정 한쪽으로 치우치지 않으면 좋습니다.</td><td>표본 수가 적으면 퍼센트가 쉽게 흔들립니다.</td></tr></tbody></table></div><div class="helper" style="margin-top:10px"><strong>실전 해석 팁</strong><br>1) <strong>정확도는 높지만 누적 수익률이 마이너스</strong>이면 큰 손실 구간 몇 번에 성과가 무너졌을 가능성이 큽니다.<br>2) <strong>정확도는 낮아도 누적 수익률이 플러스</strong>이면 손익비가 좋아 일부 큰 수익이 전체 성과를 끌어올린 경우일 수 있습니다.<br>3) <strong>MDD가 크면</strong> 실전에서는 중간에 전략을 포기할 가능성이 높아집니다.<br>4) <strong>예측 평가 간격 ${step}일</strong>이 <strong>예측 기간 ${horizon}일</strong>보다 짧으면 중첩 평가가 발생하므로 누적 수익률 해석에 더 보수적이어야 합니다.</div></div></details>`;
+}
+
+function simulateWalkForward(rows,tests,costPercent){
+  // Predictions may overlap; the portfolio only accepts disjoint signal windows.
+  const selected=[];let lastEnd=-1;
+  for(const t of tests){if(t.index>=lastEnd){selected.push(t);lastEnd=t.endIndex;}}
+  const entries=new Map(selected.filter(t=>t.pred==='up').map(t=>[t.entryIndex,t]));
+  const half=costPercent/200;let cash=10000,qty=0,exit=-1,peak=10000,mdd=0,trades=0;
+  const curve=[];
+  for(let i=0;i<rows.length;i++){
+    if(entries.has(i)&&qty===0){const t=entries.get(i);qty=cash/(rows[i].open*(1+half));cash=0;exit=t.endIndex;trades++;}
+    if(i===exit&&qty>0){cash=qty*rows[i].close*(1-half);qty=0;exit=-1;}
+    const equity=cash+qty*rows[i].close;curve.push(equity);peak=Math.max(peak,equity);mdd=Math.max(mdd,(peak-equity)/peak);
+  }
+  return {equity:(cash+qty*(rows.at(-1)?.close||0))/10000,maxDrawdown:mdd*100,selectedCount:selected.length,trades,curve};
+}
+function runWalkForwardBacktest(id){
+  const allRows=appState.marketData[id]||[];const lookbackDays=n($('historyDays')?.value)||1095;const lastDate=allRows.at(-1)?.date;const cutoffDate=lastDate?(()=>{const d=new Date(lastDate+'T00:00:00');d.setDate(d.getDate()-lookbackDays);return d.toISOString().slice(0,10);})():'';const rows=cutoffDate?allRows.filter(r=>r.date>=cutoffDate):allRows;
+  const resultEl=$('backtestResults');
+  if(rows.length<75){resultEl.className='status error';resultEl.textContent=`백테스트 데이터가 부족합니다 (${rows.length}행). 초기 검증에는 최소 75행 이상이 필요합니다. 안정적인 평가를 위해서는 160행 이상을 권장합니다.`;return;}
+  const horizon=n($('analysisHorizon').value)||10;
+  const k=n($('analysisK').value)||15;
+  const threshold=n($('analysisThreshold').value)||1;
+  const step=n($('backtestStep').value)||horizon;
+  const cost=n($('backtestCost').value)||0;
+  const feats=featureRows(rows), byIndex=new Map(feats.map(f=>[f.index,f]));
+  const firstTest=Math.max(60, 20+horizon+20);
+  const tests=[];
+  for(let i=firstTest;i+horizon<rows.length;i+=step){
+    const current=byIndex.get(i);if(!current)continue;
+    // Only use historical examples whose full forward outcome was known before this test date.
+    const candidates=feats.filter(f=>f.index+horizon<i);
+    if(candidates.length<Math.max(20,k))continue;
+    const dims=current.vector.length,means=[],stds=[];
+    for(let j=0;j<dims;j++){
+      const vals=candidates.map(c=>c.vector[j]);
+      const mean=vals.reduce((a,b)=>a+b,0)/vals.length;
+      const variance=vals.reduce((a,b)=>a+(b-mean)**2,0)/vals.length;
+      means.push(mean);stds.push(Math.sqrt(variance)||1);
+    }
+    const norm=v=>v.map((x,j)=>(x-means[j])/stds[j]);
+    const cv=norm(current.vector);
+    const nearest=candidates.map(c=>{
+      const nv=norm(c.vector);
+      const distance=Math.sqrt(nv.reduce((a,x,j)=>a+(x-cv[j])**2,0));
+      return {index:c.index,distance,ret:(rows[c.index+horizon].close/rows[c.index].close-1)*100};
+    }).sort((a,b)=>a.distance-b.distance).slice(0,Math.min(k,candidates.length));
+    if(!nearest.length)continue;
+    const avg=nearest.reduce((a,x)=>a+x.ret,0)/nearest.length;
+    const pred=avg>threshold?'up':avg< -threshold?'down':'flat';
+    const actualReturn=(rows[i+horizon].close/rows[i].close-1)*100;
+    const actual=actualReturn>threshold?'up':actualReturn< -threshold?'down':'flat';
+    let strategyReturn=pred==='up'?(rows[i+horizon].close/rows[i+1].open-1)*100-cost:0;
+    tests.push({index:i,entryIndex:i+1,endIndex:i+horizon,date:rows[i].date,endDate:rows[i+horizon].date,pred,actual,actualReturn,strategyReturn,avg,samples:nearest.length});
+  }
+  if(tests.length<10){resultEl.className='status error';resultEl.textContent=`검증 표본이 ${tests.length}개뿐입니다. 데이터 기간을 늘리거나 평가 간격을 줄여 주세요. 다만 간격을 줄이면 평가 기간이 중첩되어 결과가 서로 독립적이지 않을 수 있습니다.`;return;}
+  const correct=tests.filter(t=>t.pred===t.actual).length;
+  const classStats=['up','down','flat'].map(c=>{const a=tests.filter(t=>t.actual===c);return {c,n:a.length,hit:a.length?a.filter(t=>t.pred===c).length/a.length*100:null};});
+  const avgActual=tests.reduce((a,t)=>a+t.actualReturn,0)/tests.length;
+  const avgStrategy=tests.reduce((a,t)=>a+t.strategyReturn,0)/tests.length;
+  const portfolio=simulateWalkForward(rows,tests,cost);
+  const equity=portfolio.equity,maxDrawdown=portfolio.maxDrawdown;
+  const compounded=(equity-1)*100;
+  const rowsHtml=tests.slice(-30).reverse().map(t=>`<tr><td>${esc(t.date)}</td><td>${esc(t.endDate)}</td><td>${classLabel(t.pred)}</td><td>${classLabel(t.actual)}</td><td class="${cls(t.actualReturn)}">${pct(t.actualReturn)}</td><td class="${cls(t.strategyReturn)}">${pct(t.strategyReturn)}</td><td>${t.samples}</td></tr>`).join('');
+  const accuracy=correct/tests.length*100;
+  const accuracyInfo=classifyBacktestMetric('accuracy',accuracy);
+  const compoundedInfo=classifyBacktestMetric('compounded',compounded);
+  const mddInfo=classifyBacktestMetric('mdd',maxDrawdown);
+  const avgInfo=classifyBacktestMetric('avgStrategy',avgStrategy);
+  const overlapInfo=classifyBacktestMetric('overlap',0,{step,horizon});
+  resultEl.className='status';
+  resultEl.innerHTML=`<div class="status">롱·현금 모의 원장: ${portfolio.selectedCount}개 비중첩 관찰 구간 · ${portfolio.trades}회 진입. 신호 다음 날 시가에 진입하며 일별 보유자산으로 MDD를 계산합니다. 하락 예측은 현금 유지로 처리합니다. 겹치는 예측은 정확도 평가에만 사용하고 수익률을 합성하지 않습니다.</div><div class="position-metrics" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-top:8px"><div class="position-metric">${metricLabelWithTip('방향 분류 정확도','예측 방향과 실제 방향이 일치한 비율입니다.',backtestCommentBadge(accuracyInfo.label,accuracyInfo.tone,accuracyInfo.desc))}<strong>${accuracy.toFixed(1)}%</strong><small>${correct}/${tests.length}회 일치</small></div><div class="position-metric">${metricLabelWithTip('전략 누적 수익률','비중첩 신호의 익일 시가 진입·기간 말 종가 청산을 이어 계산한 가상 원장 수익률입니다.',backtestCommentBadge(compoundedInfo.label,compoundedInfo.tone,compoundedInfo.desc))}<strong class="${cls(compounded)}">${pct(compounded)}</strong><small>가정 왕복 비용 ${cost}% · 롱/현금 원장</small></div><div class="position-metric">${metricLabelWithTip('최대 낙폭(MDD)','백테스트 진행 중 고점 대비 가장 크게 밀린 손실 폭입니다.',backtestCommentBadge(mddInfo.label,mddInfo.tone,mddInfo.desc))}<strong class="negative">${pct(-maxDrawdown)}</strong><small>일별 종가 가상자산의 고점 대비 하락</small></div><div class="position-metric">${metricLabelWithTip('실제 평균 수익률','각 평가 구간에서 종목 자체가 평균적으로 얼마나 움직였는지입니다.')}<strong class="${cls(avgActual)}">${pct(avgActual)}</strong><small>예측 기간 ${horizon}거래일</small></div><div class="position-metric">${metricLabelWithTip('전략 평균 수익률','예측 신호를 그대로 따랐을 때 1회당 평균 수익률입니다.',backtestCommentBadge(avgInfo.label,avgInfo.tone,avgInfo.desc))}<strong class="${cls(avgStrategy)}">${pct(avgStrategy)}</strong><small>신호당 단순 평균</small></div><div class="position-metric">${metricLabelWithTip('평가 설정','예측 기간, 평가 간격, K, 보합 기준을 함께 보여줍니다.',backtestCommentBadge(overlapInfo.label,overlapInfo.tone,overlapInfo.desc))}<strong>${horizon}일 / ${step}일</strong><small>K=${k}, 보합 ±${threshold}%</small></div></div><div style="margin:12px 0"><strong>실제 시장 국면별 방향 적중률</strong><div class="helper">${classStats.map(x=>`${classLabel(x.c)} ${x.hit===null?'표본 없음':x.hit.toFixed(1)+'%'} (${x.n}건)`).join(' · ')}</div></div><div class="status">주의: 과거 일봉으로 수행한 모의 검증 결과이며 미래 수익을 보장하지 않습니다. 비용은 단순 왕복 비용 가정이며, 세금·슬리피지·환전비용·레버리지 ETF의 분배/병합 등은 별도 반영이 필요합니다. 평가 간격이 예측 기간보다 짧으면 수익 구간이 중첩됩니다. 현재 ${tests.length}개 시점의 결과입니다.</div>${backtestInterpretationHTML({horizon,step,cost,testsCount:tests.length,accuracy,compounded,maxDrawdown,avgActual,avgStrategy})}<div class="status" style="margin-top:12px;background:#eff8f3;color:var(--ink)"><strong>📖 백테스트 결과 읽는 법 · 항상 표시</strong><div style="margin-top:6px;line-height:1.8">① <b>방향 분류 정확도</b>: 예측 방향이 실제와 일치한 비율입니다. ② <b>전략 누적 수익률</b>: 비중첩 신호로 계산한 롱/현금 모의 원장의 수익률이며 실제 계좌 성과가 아닙니다. ③ <b>최대 낙폭(MDD)</b>: 평가 순서상 고점에서 가장 크게 하락한 비율입니다. ④ <b>실제 평균 수익률</b>: 종목 자체의 구간 평균 등락률입니다. ⑤ <b>전략 평균 수익률</b>: 신호 1회당 가상 수익률 평균입니다. ⑥ <b>평가 설정</b>: 예측 기간과 평가 간격이 짧을수록 구간 중첩에 유의해야 합니다.</div><div style="margin-top:5px;font-size:10px">위의 <b>백테스트 지표 해석 가이드</b>에서 간단 설명 / 자세한 설명을 선택할 수 있습니다. 자동 코멘트는 비교를 돕는 참고 지표이지 매매 추천이나 성능 보증이 아닙니다.</div></div>${strategyGuidanceHTML({accuracy,compounded,maxDrawdown,avgStrategy,step,horizon,testsCount:tests.length})}${holdingActionPlanHTML(id,{accuracy,compounded,maxDrawdown,step,horizon,testsCount:tests.length})}<div class="subsection"><div class="subsection-head"><h4>최근 평가 기록(최대 30건)</h4><span class="badge">${tests.length}건</span></div><div class="table-wrap"><table style="min-width:720px"><thead><tr><th>예측 기준일</th><th>평가 종료일</th><th>예측</th><th>실제</th><th>실제 수익률</th><th>전략 수익률</th><th>유사 표본</th></tr></thead><tbody>${rowsHtml}</tbody></table></div></div>`;
+  // Explicitly bind controls within the application closure; inline HTML onclick
+  // cannot resolve closure-local functions in this app.
+  const simpleButton=resultEl.querySelector('#backtestGuideModeSimple');
+  const detailButton=resultEl.querySelector('#backtestGuideModeDetail');
+  if(simpleButton)simpleButton.addEventListener('click',()=>setBacktestGuideMode('simple'));
+  if(detailButton)detailButton.addEventListener('click',()=>setBacktestGuideMode('detail'));
+  setBacktestGuideMode('simple');
+}
+
+function runPatternAnalysis(id){const s=security(id),allRows=appState.marketData[id]||[],lookbackDays=n($('historyDays')?.value)||1095,lastDate=allRows.at(-1)?.date,cutoffDate=lastDate?(()=>{const d=new Date(lastDate+'T00:00:00');d.setDate(d.getDate()-lookbackDays);return d.toISOString().slice(0,10);})():'',rows=cutoffDate?allRows.filter(r=>r.date>=cutoffDate):allRows;if(rows.length<60){toast('과거 데이터가 부족합니다. 최소 60행 이상 불러오세요.');return;}const horizon=n($('analysisHorizon').value)||10,k=n($('analysisK').value)||15,threshold=n($('analysisThreshold').value)||1;const feats=featureRows(rows);const current=feats.at(-1);const candidates=feats.filter(f=>f.index<rows.length-horizon-1&&f.index<current.index-1);if(candidates.length<20){toast('미래 결과가 확인된 과거 사례가 부족합니다. 더 긴 과거 데이터를 불러오세요.');return;}const dims=current.vector.length,means=[],stds=[];for(let j=0;j<dims;j++){const vals=candidates.map(c=>c.vector[j]);const m=vals.reduce((a,b)=>a+b,0)/vals.length;means.push(m);stds.push(Math.sqrt(vals.reduce((a,b)=>a+(b-m)**2,0)/vals.length)||1);}const norm=v=>v.map((x,j)=>(x-means[j])/stds[j]);const cv=norm(current.vector);const nearest=candidates.map(c=>({index:c.index,distance:Math.sqrt(norm(c.vector).reduce((a,x,j)=>a+(x-cv[j])**2,0)),ret:(rows[c.index+horizon].close/rows[c.index].close-1)*100})).sort((a,b)=>a.distance-b.distance).slice(0,Math.min(k,candidates.length));const up=nearest.filter(x=>x.ret>threshold).length,down=nearest.filter(x=>x.ret< -threshold).length,flat=nearest.length-up-down;const avg=nearest.reduce((a,x)=>a+x.ret,0)/nearest.length;const p={config:{lookback:lookbackDays,horizon,k,threshold},securityId:id,symbol:s.symbol,signalDate:rows.at(-1).date,price:rows.at(-1).close,horizon,k,threshold,pUp:up/nearest.length*100,pDown:down/nearest.length*100,pFlat:flat/nearest.length*100,expectedReturn:avg,sampleCount:nearest.length,avgDistance:nearest.reduce((a,x)=>a+x.distance,0)/nearest.length,predClass:avg>threshold?'up':avg< -threshold?'down':'flat',rows:rows.slice(-90),currency:curr(s),startDate:rows.at(-90)?.date||rows[0].date,endDate:rows.at(-1).date,candidateCount:candidates.length,createdAt:new Date().toISOString()};lastAnalysis=p;appState.lastAnalysis=appState.lastAnalysis||{};appState.lastAnalysis[id]=p;saveState();render();toast(`유사 패턴 분석 완료: ${p.sampleCount}개 사례를 비교했습니다.`);}
+function predictionScorecardHTML(id){
+ const ps=appState.predictions.filter(p=>p.securityId===id&&!p.demo),groups=new Map();
+ for(const p of ps){const c=p.config||{},key=[n(c.lookback)||'미상',n(c.horizon)||n(p.horizon),n(c.k)||n(p.sampleCount),n(c.threshold)||n(p.threshold)].join('|');const a=groups.get(key)||[];a.push(p);groups.set(key,a);}
+ const all=[...groups].map(([key,ps])=>{const valid=ps.filter(p=>p.resolved&&Number.isFinite(Number(p.actualReturn))&&p.actualReturn!==null);const hit=valid.filter(p=>p.match===true).length;const returns=valid.map(p=>{const r=n(p.actualReturn),c=p.predClass;return c==='up'?r:c==='down'?-r:0;});const average=returns.length?returns.reduce((a,b)=>a+b,0)/returns.length:NaN;let equity=1,peak=1,mdd=0;for(const r of returns){equity*=Math.max(0.000001,1+r/100);peak=Math.max(peak,equity);mdd=Math.max(mdd,(peak-equity)/peak*100);}const wins=returns.filter(x=>x>0),losses=returns.filter(x=>x<0),factor=losses.length?wins.reduce((a,b)=>a+b,0)/(-losses.reduce((a,b)=>a+b,0)):null;return {key,total:ps.length,valid:valid.length,hit,average,factor,mdd};});
+ const rows=all.map(x=>`<tr><td>${esc(x.key.replaceAll('|',' / '))}</td><td>${x.total}</td><td>${x.valid}</td><td>${x.valid?(x.hit/x.valid*100).toFixed(1)+'%':'미검증'}</td><td>${Number.isFinite(x.average)?pct(x.average):'—'}</td><td>${x.factor===null?'표본 부족':x.factor.toFixed(2)}</td><td>${x.valid?pct(-x.mdd):'—'}</td></tr>`).join('');
+ return `<div class="subsection"><div class="subsection-head"><h4>저장 예측의 설정별 실제 검증</h4><span class="badge">${ps.length}건</span></div><p class="helper">저장된 예측 중 예측 기간이 실제로 경과하고 주가 데이터가 들어온 건만 평가합니다. 별도 설정끼리는 섞지 않습니다. 손익비는 수수료 제외 가상 방향 수익의 총이익/총손실이며, 전량 청산·포지션 규모를 고려한 실제 계좌 성과가 아닙니다. MDD도 확정된 예측의 가상 순차 복리로 계산하며 중첩 예측일 경우 실제 MDD를 나타내지 않습니다. 표본 수가 적거나 검증 시점이 겹치면 해석에 주의하세요.</p><div class="table-wrap"><table style="min-width:650px"><thead><tr><th>분석 기간(일) / 예측기간 / K / 보합 기준</th><th>저장</th><th>확정</th><th>정확도</th><th>평균 가상 수익</th><th>손익비</th><th>합성 MDD</th></tr></thead><tbody>${rows||'<tr><td colspan="7">저장된 예측이 없습니다.</td></tr>'}</tbody></table></div></div>`;
+}
+function resolvePredictions(id,rows){const byDate=new Map(rows.map((r,i)=>[r.date,i]));let count=0;for(const p of appState.predictions){if(p.securityId!==id||p.resolved||p.demo)continue;const ix=byDate.get(p.signalDate);if(ix===undefined||ix+p.horizon>=rows.length)continue;const start=rows[ix],end=rows[ix+p.horizon];if(!start||!end)continue;p.actualReturn=(end.close/start.close-1)*100;p.actualDate=end.date;p.endPrice=end.close;p.actualClass=p.actualReturn>p.threshold?'up':p.actualReturn< -p.threshold?'down':'flat';p.match=p.predClass===p.actualClass;p.resolved=true;count++;}if(count)toast(`${count}건의 예측 결과를 확인했습니다.`);}
+function savePrediction(id){
+ const p=appState.lastAnalysis?.[id];if(!p){toast('먼저 유사 패턴 분석을 실행하세요.');return;}
+ const config=p.config||{lookback:1095,horizon:p.horizon,k:p.k||p.sampleCount,threshold:p.threshold};
+ const duplicate=appState.predictions.some(x=>x.securityId===id&&x.signalDate===p.signalDate&&x.horizon===config.horizon&&!x.demo&&n(x.config?.lookback)===config.lookback&&(n(x.config?.k)||x.sampleCount)===config.k&&(n(x.config?.threshold)||x.threshold)===config.threshold);
+ if(duplicate){toast('동일한 기준일과 분석 설정의 기록이 이미 있습니다. 설정을 바꾸면 별도 기록으로 저장할 수 있습니다.');return;}
+ appState.predictions.push({id:`P-${Date.now()}`,createdAt:new Date().toISOString(),securityId:id,symbol:p.symbol,signalDate:p.signalDate,startPrice:p.price,horizon:p.horizon,threshold:p.threshold,pUp:p.pUp,pDown:p.pDown,pFlat:p.pFlat,expectedReturn:p.expectedReturn,sampleCount:p.sampleCount,predClass:p.predClass,config,resolved:false,actualReturn:null,actualDate:null,endPrice:null,match:null,note:''});
+ saveState();render();toast('분석 설정과 결과를 함께 저장했습니다.');
+}
+function deletePrediction(pid){const p=appState.predictions.find(x=>x.id===pid);if(!p)return;if(!confirm(`${p.signalDate} 예측 기록을 삭제할까요?`))return;appState.predictions=appState.predictions.filter(x=>x.id!==pid);saveState();render();toast('예측 기록을 삭제했습니다.');}
+function viewPrediction(pid){const p=appState.predictions.find(x=>x.id===pid);if(!p)return;const c=p.config||{};const lookback=c.lookback?`${c.lookback}일`:'기존 기록: 미상';const k=c.k??p.sampleCount;const threshold=c.threshold??p.threshold;openModal('저장한 예측 조회',`<p><strong>${esc(p.symbol||'')} / ${esc(p.signalDate)}</strong></p><p>분석 기간: ${esc(lookback)} · 예측: ${p.horizon}거래일 · K: ${k} · 보합: ±${threshold}%</p><p>상승 ${fmt(p.pUp,1)}% · 하락 ${fmt(p.pDown,1)}% · 보합 ${fmt(p.pFlat,1)}%</p><p>예상 평균 수익률: ${pct(p.expectedReturn)} · 유사 표본: ${p.sampleCount}개</p><p>실제 결과: ${p.resolved?pct(p.actualReturn):'미확정'}</p><p>메모: ${esc(p.note||'없음')}</p>`,[{label:'닫기',action:closeModal}]);}
+function editPrediction(pid){const p=appState.predictions.find(x=>x.id===pid);if(!p)return;const note=prompt('기록 메모를 입력하세요.',p.note||'');if(note===null)return;p.note=note;saveState();render();toast('예측 기록 메모를 수정했습니다.');}
+function exportAll(){const payload={app:'Pattern Lab Unified',version:1,exportedAt:new Date().toISOString(),state:appState};downloadFile('pattern_lab_unified_backup.json',JSON.stringify(payload,null,2),'application/json');}
+function downloadFile(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200);}
+function importAll(file){const reader=new FileReader();reader.onload=()=>{try{const x=JSON.parse(reader.result);const next=x.state||x;if(!Array.isArray(next.securities)||!Array.isArray(next.trades))throw new Error('올바른 패턴랩 백업이 아닙니다.');if(!confirm('현재 저장된 종목·매매·예측 기록을 가져온 백업으로 교체할까요? 먼저 현재 데이터를 백업하는 것을 권장합니다.'))return;appState={...defaultState(),...next};saveState();render();toast('백업을 복원했습니다.');}catch(e){toast('백업 복원 실패: '+e.message);}};reader.readAsText(file);}
+function toggleApi(){ $('apiPanel').classList.toggle('open');if($('apiPanel').classList.contains('open'))$('appKey').focus();}
+// Global events
+$('addStockBtn').onclick=openAddStock;$('refreshAllBtn').onclick=refreshAllQuotes;$('exportAllBtn').onclick=exportAll;$('importAllBtn').onclick=()=>$('importAllFile').click();$('importAllFile').onchange=e=>{if(e.target.files?.[0])importAll(e.target.files[0]);e.target.value='';};$('toggleApiBtn').onclick=toggleApi;$('apiForm').onsubmit=saveApiSettings;$('modalShade').onclick=e=>{if(e.target===$('modalShade'))closeModal();};document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+// Resolve selected stock view's analysis save button after render; delegated click handles re-rendered content.
+document.addEventListener('click',e=>{if(e.target&&e.target.id==='savePredictionBtn'){savePrediction(appState.selectedId);}});
+let kisWs=null,wsConnecting=false,wsSymbols='',reconnectPending=false,lastWsUiUpdate=0,lastWsSave=0,lastWsTickAt=0;
+window.patternLabWsLive=false;
+async function connectRealtime(force=false){
+  const securities=appState.securities.slice();
+  const symbols=securities.map(s=>`${s.market}:${s.exchange||exchangeDefault(s.market)}:${s.symbol}`).sort().join(',');
+  if(!symbols){if(kisWs){try{kisWs.close();}catch(e){}kisWs=null;}window.patternLabWsLive=false;return;}
+  if(!force&&window.patternLabWsLive&&wsSymbols===symbols)return;
+  if(wsConnecting){if(force)reconnectPending=true;return;}
+  wsConnecting=true;
+  try{
+    const status=await api('/api/status');if(!status.configured)return;
+    if(kisWs){const old=kisWs;kisWs=null;try{old.close();}catch(e){}}
+    window.patternLabWsLive=false;
+    const approval=await api('/api/ws-approval',{method:'POST',body:'{}'});
+    const ws=new WebSocket('ws://ops.koreainvestment.com:21000');kisWs=ws;wsSymbols=symbols;
+    ws.onopen=()=>{
+      securities.forEach(s=>{const trId=s.market==='KR'?'H0STCNT0':'HDFSCNT0';const trKey=s.market==='KR'?s.symbol:`D${s.exchange||'AMS'}${s.symbol}`;ws.send(JSON.stringify({header:{approval_key:approval.approvalKey,custtype:'P',tr_type:'1','content-type':'utf-8'},body:{input:{tr_id:trId,tr_key:trKey}}}));});
+      window.patternLabWsLive=true;$('apiBadge').textContent='실시간 체결 연결됨';$('apiBadge').className='pill green';
+    };
+    ws.onmessage=event=>{
+      const raw=String(event.data||'');if(raw.includes('PINGPONG')){try{ws.send(raw);}catch(e){}return;}
+      try{const parsed=JSON.parse(raw);if(parsed?.header?.tr_id==='PINGPONG'){ws.send(raw);return;}}catch(e){}
+      const parts=raw.split('|');if(parts.length<4||!['0','1'].includes(parts[0]))return;const trId=parts[1];if(trId==='PINGPONG'){try{ws.send(raw);}catch(e){}return;}
+      const fields=parts.slice(3).join('|').split('^');let s=null,price=NaN,sign='',diff=0,rate=0;
+      if(trId==='HDFSCNT0'){
+        const code=String(fields[0]||'').trim().toUpperCase(),ticker=String(fields[1]||'').trim().toUpperCase();const codeMatch=code.match(/^[DR](NAS|NYS|AMS)([A-Z][A-Z0-9.\-]*)$/);
+        s=appState.securities.find(x=>x.market==='US'&&x.symbol===ticker&&(!codeMatch||(x.exchange||'AMS')===codeMatch[1]));
+        price=Number(fields[11]);sign=String(fields[12]||'');diff=Number(fields[13]||0);rate=Number(fields[14]);
+      }else if(trId==='H0STCNT0'){
+        const ticker=String(fields[0]||'').trim().toUpperCase();s=appState.securities.find(x=>x.market==='KR'&&x.symbol===ticker);
+        price=Number(fields[2]);sign=String(fields[3]||'');diff=Number(fields[4]||0);rate=Number(fields[5]);
+      }else{return;}
+      if(!s||!Number.isFinite(price)||price<=0)return;
+      const change=sign==='3'?0:['4','5'].includes(sign)?-Math.abs(diff):Math.abs(diff);const changePct=sign==='3'?0:['4','5'].includes(sign)?-Math.abs(rate):Math.abs(rate);
+      appState.quotes[s.id]={symbol:s.symbol,market:s.market,exchange:s.exchange||exchangeDefault(s.market),price,change,changePct,volume:NaN,currency:curr(s),fetchedAt:new Date().toISOString(),source:'한국투자 실시간 체결 WebSocket',manual:false};
+      const now=Date.now();lastWsTickAt=now;if(now-lastWsUiUpdate>800){updateQuotesUI();lastWsUiUpdate=now;}if(now-lastWsSave>10000){saveState();lastWsSave=now;}
+    };
+    ws.onerror=()=>{if(kisWs===ws){window.patternLabWsLive=false;$('apiBadge').textContent='시세 REST 대체';$('apiBadge').className='pill';}};
+    ws.onclose=()=>{if(kisWs===ws){kisWs=null;window.patternLabWsLive=false;$('apiBadge').textContent='API 연결됨 · REST 대체';$('apiBadge').className='pill';}};
+  }catch(err){window.patternLabWsLive=false;$('apiBadge').textContent='API 연결됨 · REST 대체';$('apiBadge').className='pill';}
+  finally{wsConnecting=false;if(reconnectPending){reconnectPending=false;connectRealtime(true);}}
+}
+render();refreshApiStatus().then(configured=>{if(configured){if(appState.selectedId)refreshQuoteQuiet(appState.selectedId);connectRealtime(true);}});
+// Use REST polling as a best-effort fallback when a WebSocket session is not available.
+setInterval(()=>{const streamStale=!lastWsTickAt||(Date.now()-lastWsTickAt>120000);if((!window.patternLabWsLive||streamStale)&&appState.activeView==='stock'&&appState.selectedId&&document.visibilityState==='visible')refreshQuoteQuiet(appState.selectedId);},60000);
+async function refreshQuoteQuiet(id){const s=security(id);if(!s||window.patternLabWsLive)return;try{const qs=new URLSearchParams({market:s.market,symbol:s.symbol,exchange:s.exchange||exchangeDefault(s.market),force:'0'});const q=await api('/api/quote?'+qs.toString());appState.quotes[id]={...q,manual:false};saveState();updateQuotesUI();}catch(e){/* periodic refresh is best-effort; manual refresh shows errors */}}
+window.editPrediction=editPrediction;window.deletePrediction=deletePrediction;
+})();
+</script>
+</body></html>

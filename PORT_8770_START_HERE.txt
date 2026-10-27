@@ -1,0 +1,11 @@
+Pattern Lab - Backtest Guide Test Build (8770)
+
+IMPORTANT:
+- This package runs on http://127.0.0.1:8770/ - NOT 8768.
+- Keep original 8768 version unchanged.
+- The 8770 browser origin has independent localStorage; back up data before importing.
+- Start: start_windows.bat
+- Verify top badge: 백테스트 해석판 · 포트 8770 · 2026-10-23
+- Import previously verified JSON if desired to see the SOXL trades.
+- Run backtest then verify question-mark tooltips, commentary labels, visible interpretation and detail mode.
+- This patch changes UI and port only; no backtest computations intentionally changed.

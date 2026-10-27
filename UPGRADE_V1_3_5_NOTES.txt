@@ -1,0 +1,29 @@
+Pattern Lab v1.3.5 RC1 — ledger cycle/audit and saved-prediction scorecard
+Date: 2026-10-24
+Base: pattern_lab_v1_3_4_holding_strategy_scenarios_8770.zip
+
+Implemented:
+- Trade ledger cycle detection on recorded zero-balance boundaries.
+- Full-liquidation events reset price and fee cost bases to zero.
+- Excess-sell or malformed entries listed as invalid rather than silently omitted.
+- Potential duplicates (same date/side/qty/price) flagged, NEVER auto-deleted.
+- Brokerage-reported holding reference compared with trade ledger.
+- Saved predictions grouped by lookback, horizon, K, flat threshold.
+- Show saved count, resolved count, directional accuracy, average simulated signal return, gross profit/loss ratio, simulated compounded MDD per parameter group.
+- Existing backtest guide, tooltip and position strategy scenarios retained.
+
+Independent fixture tests:
+- 45-trade reference JSON: 38 shares, 164.2326315789 avg excluding fees, four closed cycles.
+- Full 113-trade JSON: 121 shares, ~143.039901 avg excluding fees, zero closed cycles.
+- Important: 113-trade ledger needs missing full-liquidation/reconciliation evidence. DO NOT auto-force it to 38 shares.
+
+Limitations:
+- Duplicate detection is a WARNING only (same-day identical fills can be valid).
+- A missing closing trade cannot be inferred safely from other entries.
+- Saved prediction verification occurs when historical price data resolves a prediction; scorecard is NOT a model retraining or calibrated probability estimator.
+- Performance MDD is a simple sequential simulated signal calculation, not independently funded live trading, particularly when horizons overlap.
+- End-to-end Windows/browser UI test not performed.
+
+Safety:
+- No automatic mutation of trades, saved predictions or account balances.
+- Test on port 8770 in separate browser profile/backup before using production data.

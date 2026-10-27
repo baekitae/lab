@@ -1,0 +1,21 @@
+__pycache__/
+*.pyc
+kis_credentials.json
+data/*_daily.csv
+data/*.sqlite3
+data/*.sqlite3-*
+data/*-backup-*.sqlite3
+.env
+.venv/
+data/settings.json
+data/credentials.dpapi
+data/backups/
+data/recovery/
+data/*.tmp
+
+data/credentials.fernet
+.env.*
+
+# Runtime data never belongs in source control.
+data/*
+!data/.keep

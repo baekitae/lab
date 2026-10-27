@@ -1,0 +1,37 @@
+Pattern Lab v1.3.4 - Backtest Guide Plus Patch
+Date: 2026-10-23
+Base: pattern_lab_v1_3_4_backtest_explain_patch.zip
+
+Added features
+1. Simple / Detailed explanation modes
+   - Added toggle buttons inside the backtest interpretation guide.
+   - Default mode is Simple.
+2. ? Tooltip buttons for each backtest metric
+   - Added native tooltip buttons beside metric labels.
+3. Automatic comments based on current backtest results
+   - Shows labels such as 양호 / 주의 / 해석 유의.
+   - Applied to accuracy, cumulative return, MDD, average strategy return, and evaluation overlap risk.
+
+What was changed
+- stock_pattern_lab.html
+  - Added helper functions:
+    * backtestCommentBadge
+    * metricLabelWithTip
+    * classifyBacktestMetric
+    * setBacktestGuideMode
+    * enhanced backtestInterpretationHTML
+  - Enhanced walk-forward backtest summary cards with tooltips and auto comments.
+  - Added simple/detail interpretation sections.
+  - Added CSS for tooltip buttons and comment badges.
+
+What was verified
+- JavaScript syntax check: passed
+- Code insertion for UI features: verified
+
+Not yet verified
+- Manual click test on Windows browser UI
+- End-to-end visual test after running backtest in browser
+
+Data safety
+- Existing trade records, prediction records, and saved settings are not intentionally altered by this patch.
+- This patch changes UI/help rendering only.

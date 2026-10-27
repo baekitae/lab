@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: pattern-lab
+    runtime: python
+    plan: starter
+    region: singapore
+    buildCommand: pip install --disable-pip-version-check -r requirements-cloud.txt
+    startCommand: python -u server.py
+    healthCheckPath: /healthz
+    disk:
+      name: pattern-lab-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.10
+      - key: PYTHONDONTWRITEBYTECODE
+        value: '1'
+      - key: PL_WEB_MODE
+        value: '1'
+      - key: PL_DATA_DIR
+        value: /var/data
+      - key: PL_WEB_USER
+        value: owner
+      - key: PL_WEB_PASSWORD
+        generateValue: true
+      - key: PL_VAULT_MASTER_KEY
+        generateValue: true

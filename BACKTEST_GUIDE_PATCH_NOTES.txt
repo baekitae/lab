@@ -1,0 +1,21 @@
+Pattern Lab v1.3.4 - Backtest Explanation Guide Patch
+Date: 2026-10-23
+
+Changes:
+1. Added a collapsible "백테스트 지표 해석 가이드" section under the walk-forward backtest summary.
+2. Explained how to interpret:
+   - 방향 분류 정확도
+   - 전략 누적 수익률
+   - 최대 낙폭(MDD)
+   - 실제 평균 수익률
+   - 전략 평균 수익률
+   - 시장 국면별 적중률
+3. Added practical reading tips:
+   - high accuracy but negative cumulative return
+   - low accuracy but positive cumulative return
+   - high MDD caution
+   - overlapping evaluation windows caution
+
+Notes:
+- This patch changes UI/help text only.
+- Existing user data and calculations are preserved.

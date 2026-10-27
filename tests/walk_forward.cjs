@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const html=fs.readFileSync('stock_pattern_lab.html','utf8');
+const code=html.slice(html.indexOf('function simulateWalkForward('),html.indexOf('function runWalkForwardBacktest('));
+const context={};vm.createContext(context);vm.runInContext(code,context);const simulate=context.simulateWalkForward;
+const rows=Array.from({length:10},()=>({open:100,close:100}));
+const signals=Array.from({length:7},(_,i)=>({index:i,entryIndex:i+1,endIndex:i+3,pred:'up'}));
+const overlap=simulate(rows,signals,0);assert.equal(overlap.selectedCount,3);assert.equal(overlap.trades,3);assert.equal(overlap.equity,1);
+const cash=simulate(rows,signals.map(s=>({...s,pred:'down'})),0);assert.equal(cash.equity,1);assert.equal(cash.trades,0);
+const gap=simulate([{open:50,close:50},{open:1000,close:1000},{open:1000,close:1000}], [{index:0,entryIndex:1,endIndex:2,pred:'up'}],0);assert.equal(gap.equity,1);
+const drawdown=simulate([{open:100,close:100},{open:100,close:100},{open:100,close:50},{open:100,close:100}], [{index:0,entryIndex:1,endIndex:3,pred:'up'}],0);assert.equal(drawdown.equity,1);assert.equal(drawdown.maxDrawdown,50);
+const cost=simulate(rows,[signals[0]],1);assert.ok(cost.equity<1);assert.ok(Math.abs(cost.equity-.995/1.005)<1e-10);
+console.log('PASS walk-forward: no overlap compounding, next-open execution, long/cash only, daily drawdown, round-trip costs');
