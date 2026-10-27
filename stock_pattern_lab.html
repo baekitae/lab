@@ -174,7 +174,7 @@ $('manualTradeTab').onclick=()=>setTradeEntryPane('manual');$('csvTradeTab').onc
 $('tradeImportFile').onchange=async e=>{const file=e.target.files?.[0];e.target.value='';if(file)await prepareTradeCsvImport(id,file);};
 $('tradeAuditRun').onclick=()=>runTradeSourceAudit(id);$('tradeAuditDownload').onclick=downloadTradeSourceAudit;$('downloadTradeTemplate').onclick=downloadTradeCsvTemplate;
 $('commitTradeImport').onclick=()=>commitTradeCsvImport(id);
-} 
+}
 function setTradeEntryPane(which){
   const isCsv=which==='csv';$('manualTradePane').classList.toggle('hidden',isCsv);$('csvTradePane').classList.toggle('hidden',!isCsv);
   $('manualTradeTab').classList.toggle('active',!isCsv);$('csvTradeTab').classList.toggle('active',isCsv);

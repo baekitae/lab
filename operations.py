@@ -142,7 +142,7 @@ class Operations:
                  'mismatches':mismatches[:100],'tolerance':.005,'freshness_enforced':require_fresh,'source_identity':'user-attested'}
         self.add('market_comparison',payload['id'],payload);return payload
     def market_gate(self,snapshot_id,now=None):
-        candidates=[c for c in self.events('market_comparison') if snapshot_id in c['snapshot_ids']] 
+        candidates=[c for c in self.events('market_comparison') if snapshot_id in c['snapshot_ids']]
         if not candidates:return {'gate':'dual_market_source','passed':False,'reason':'두 공급원의 최근 확정 가격 검증이 필요합니다.'}
         latest=latest_closed(now)
         c=candidates[-1]

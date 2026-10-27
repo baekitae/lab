@@ -4,7 +4,7 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 output=Path(sys.argv[1]) if len(sys.argv)>1 else ROOT.parent/'pattern_lab_ai_league_v2_0.zip'
-files=[p for p in ROOT.iterdir() if p.is_file() and (p.suffix in {'.py','.html','.bat','.sh','.txt','.md'} or p.name in {'.gitignore','render.yaml'})]
+files=[p for p in ROOT.iterdir() if p.is_file() and (p.suffix in {'.py','.html','.bat','.sh','.txt','.md'} or p.name in {'.gitignore','.gitattributes','render.yaml'})]
 for directory,extensions in [('docs',{'.md'}),('tests',{'.py','.cjs'}),('scripts',{'.py'})]:
     files.extend(p for p in (ROOT/directory).rglob('*') if p.is_file() and p.suffix in extensions and '__pycache__' not in p.parts)
 entries={}
