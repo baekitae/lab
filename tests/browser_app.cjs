@@ -2,7 +2,10 @@
 const {chromium}=require('playwright'),fs=require('node:fs');
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium'});try{
  const page=await browser.newPage({viewport:{width:1440,height:1000},timezoneId:'UTC'});const errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto('http://127.0.0.1:18772/app');await page.getByRole('button',{name:'① API 연결 설정',exact:true}).click();await page.locator('#globalModel').waitFor();
+ await page.goto('http://127.0.0.1:18772/ai');await page.locator('#roles .role').first().waitFor();
+ if(!await page.locator('#start').isDisabled())throw Error('Unconfigured meeting should be disabled');
+ const reason=await page.locator('#startReadiness').textContent();if(!reason.includes('입력 토큰 단가')||!reason.includes('Gemini 모델'))throw Error('Missing actionable meeting blocker');
+ await page.getByRole('link',{name:'API 연결 설정으로 이동',exact:true}).click();await page.locator('#globalModel').waitFor();
  await page.locator('#kisKey').fill('test-only-kis-appkey');await page.locator('#kisSecret').fill('test-only-kis-secret');
  await page.getByRole('button',{name:'한국투자 키만 저장',exact:true}).click();await page.waitForFunction(()=>document.getElementById('message').textContent.startsWith('한국투자 키를 저장했습니다.'));
  await page.locator('#kisSavedStatus').filter({hasText:'두 키가 등록되어 있습니다.'}).waitFor();
@@ -35,7 +38,7 @@ const {chromium}=require('playwright'),fs=require('node:fs');
   await page.getByRole('button',{name:'최신 시세 정합성 검증',exact:true}).click();await page.getByText('출처 확인·가격 정합성 정책을 통과했습니다.',{exact:true}).waitFor();return feeds;
  }
  await addFeed('TEST_VENDOR_A',fixture.market_csv,'2026-10-26T21:00');if(!await page.locator('#compare').isDisabled())throw Error('Single-source comparison should be disabled');if(await page.locator('#feedB').inputValue())throw Error('Same provider offered as second source');await addFeed('TEST_VENDOR_B',fixture.market_csv,'2026-10-26T21:00');const base=await compareLatest();
- await page.goto('http://127.0.0.1:18772/ai');await page.waitForFunction(()=>document.getElementById('snapshot')?.options.length>0);await page.locator('#snapshot').selectOption(base[0].snapshot_id);
+ await page.goto('http://127.0.0.1:18772/ai');await page.waitForFunction(()=>document.getElementById('snapshot')?.options.length>0);await page.locator('#snapshot').selectOption(base[0].snapshot_id);if(await page.locator('#start').isDisabled())throw Error('Configured meeting should be enabled');if(!(await page.locator('#startReadiness').textContent()).includes('준비 완료'))throw Error('Readiness message stale');
  await page.getByRole('button',{name:'Gemini 회의 시작',exact:true}).click();await page.getByText('12/12 단계',{exact:true}).waitFor({timeout:15000});
  await page.goto('http://127.0.0.1:18772/app');await page.getByRole('button',{name:'③ 모의거래·성적표',exact:true}).click();await page.locator('#conditionsChecked').check();
  await page.getByRole('button',{name:'익일 모의 주문 접수',exact:true}).click();await page.getByText('2026-10-27 익일 시가 모의 주문을 접수했습니다.',{exact:true}).waitFor();
