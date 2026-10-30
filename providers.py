@@ -44,7 +44,14 @@ def valid_model(model):
         if friendly:model='gemini-'+friendly.group(1)+'-'+friendly.group(2).lower().replace(' ','-')
     if not isinstance(model, str) or not re.fullmatch(r'gemini-[A-Za-z0-9._-]{1,100}', model):
         raise ValueError('실제 사용 가능한 Gemini 모델 ID를 설정하세요 (gemini- 접두사).')
+    if re.search(r'(?:^|-)(?:tts|audio|image|embedding|live)(?:-|$)',model,re.IGNORECASE):
+        raise ValueError('음성·이미지 전용 모델은 회의에 사용할 수 없습니다. -tts가 없는 텍스트 모델을 선택하고, 역할별 개별 모델도 확인하세요.')
     return model
+
+
+def report_model_supported(model):
+    try:valid_model(model);return True
+    except ValueError:return False
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -163,7 +170,7 @@ class GeminiAdapter:
             query = '?pageSize=100' + ('&pageToken=' + urllib.parse.quote(token, safe='') if token else '')
             response = self._request('/models' + query)
             models.extend(m['name'].removeprefix('models/') for m in response.get('models', [])
-                          if 'generateContent' in m.get('supportedGenerationMethods', []))
+                          if 'generateContent' in m.get('supportedGenerationMethods', []) and report_model_supported(m.get('name','').removeprefix('models/')))
             token = response.get('nextPageToken', '')
             if not token:
                 return models
