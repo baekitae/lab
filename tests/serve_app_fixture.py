@@ -37,6 +37,9 @@ if __name__=='__main__':
         server.CREDS_PATH=root/'no-legacy-credentials.json';server.GeminiAdapter=Models;server.PORT=18772
         server._get_token=lambda: ('fixture-only-token',server.load_credentials())
         base=prices()
+        import connectors
+        connectors.datetime=Clock
+        connectors.fetch_chart=lambda symbol,cutoff: (b'{"fixture_only":true}',prices(end=cutoff),{})
         future=base+[{'date':'2026-10-27','open':45,'high':47,'low':44,'close':46},{'date':'2026-10-28','open':46,'high':48,'low':45,'close':47}]
         class Handler(server.Handler):
             def do_GET(self):

@@ -2,6 +2,9 @@
 import csv,io,re,math,urllib.parse,urllib.request,urllib.error
 from datetime import datetime,timezone
 from trading_calendar import latest_closed
+from yahoo_market import fetch_chart
+
+PROVIDERS=('kis','yahoo','stooq')
 
 def parse_stooq_csv(raw,content_type=''):
     if len(raw)>3_000_000:raise ValueError('Stooq 시세 파일 크기가 허용 한도를 초과했습니다.')
@@ -33,9 +36,10 @@ class MarketConnectors:
     def __init__(self,ops,kis_history):self.ops=ops;self.kis_history=kis_history
     def configure(self,body):
         provider=body.get('provider')
-        if provider not in ('kis','stooq') or not isinstance(body.get('enabled'),bool):raise ValueError('공급원과 활성화 여부를 확인하세요.')
+        if provider not in PROVIDERS or not isinstance(body.get('enabled'),bool):raise ValueError('공급원과 활성화 여부를 확인하세요.')
         if body['enabled'] and body.get('license_confirmed') is not True:raise ValueError('공급원의 이용 조건을 확인하고 동의해야 합니다.')
         if body.get('price_basis') not in ('split-adjusted','unadjusted'):raise ValueError('공급원의 실제 분할 조정 정책을 확인하세요.')
+        if provider=='yahoo' and body['price_basis']!='split-adjusted':raise ValueError('Yahoo 일봉 연결은 분할 조정 OHLC만 사용합니다. 비조정으로 표시할 수 없습니다.')
         symbol=str(body.get('symbol','SOXL')).upper()
         if not re.fullmatch('[A-Z][A-Z0-9.-]{0,11}',symbol):raise ValueError('미국 주식 종목을 확인하세요.')
         value={'provider':provider,'enabled':body['enabled'],'license_confirmed':body.get('license_confirmed') is True,
@@ -44,6 +48,7 @@ class MarketConnectors:
         return self.ops.add('connector_config',provider,value)
     def fetch(self,provider):
         if self.ops.emergency()['enabled']:raise ValueError('긴급 중지 중에는 공급원에 연결하지 않습니다.')
+        if provider not in PROVIDERS:raise ValueError('지원하는 공급원을 선택하세요.')
         config=self.ops.last('connector_config',provider)
         if not config or not config['enabled'] or not config['license_confirmed']:raise ValueError('사용 조건과 분할 조정 정책을 확인하고 공급원을 활성화하세요.')
         cutoff=latest_closed()['date'];symbol=config['symbol']
@@ -56,6 +61,11 @@ class MarketConnectors:
                 codes=list(dict.fromkeys(re.findall(r'\b(?:EGW|APBK|OPSQ|OPSP|AUTH)[A-Z0-9]{3,12}\b|HTTP\s+[1-5][0-9]{2}',str(exc))))
                 detail=' 제공처 오류 코드: '+', '.join(codes[:5])+'.' if codes else ''
                 raise ValueError('한국투자 과거 일봉 조회에 실패했습니다.'+detail+' ① API 연결 설정에서 한국투자 인증 확인을 먼저 누르세요. 인증이 성공하면 해외주식 시세 조회 권한·호출 제한·종목을 확인한 뒤 다시 갱신하세요. 원본과 저장된 키는 유지됩니다.') from None
+        elif provider=='yahoo':
+            if config['price_basis']!='split-adjusted':raise ValueError('Yahoo 가격 기준을 분할 조정 주가로 다시 등록하세요.')
+            raw,rows,splits=fetch_chart(symbol,cutoff)
+            config={**config,'splits':splits}
+            self.ops.preserve(provider+'-'+symbol+'-'+cutoff+'.json',raw,'utf-8')
         else:
             url='https://stooq.com/q/d/l/?'+urllib.parse.urlencode({'s':symbol.lower()+'.us','i':'d'})
             req=urllib.request.Request(url,headers={'User-Agent':'PatternLabResearch/2.0'})
@@ -74,7 +84,7 @@ class MarketConnectors:
         return self.ops.feed(snap['id'],{**config,'asof':datetime.now(timezone.utc).isoformat()})
     def refresh(self):
         today=datetime.now(timezone.utc).date().isoformat();results=[]
-        for provider in ('kis','stooq'):
+        for provider in PROVIDERS:
             config=self.ops.last('connector_config',provider)
             if not config or not config['enabled']:continue
             key=provider+':'+today

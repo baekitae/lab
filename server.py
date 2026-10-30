@@ -13,7 +13,7 @@ from providers import GeminiAdapter, ProviderError
 from settings_store import SETTINGS
 from operations import Operations
 from backups import Backups
-from connectors import MarketConnectors
+from connectors import MarketConnectors,PROVIDERS
 from web_config import WebConfig
 
 WEB=WebConfig()
@@ -620,9 +620,9 @@ class Handler(BaseHTTPRequestHandler):
         params = urllib.parse.parse_qs(parsed.query)
         try:
             if parsed.path == '/api/app/state':
-                return self.send_json(200,{'release':'2.0.0','build':'2026-10-30.2','csrf':CSRF_TOKEN,'settings':SETTINGS.view(),'ai':AI_LEAGUE.overview(),
+                return self.send_json(200,{'release':'2.0.0','build':'2026-10-30.3','csrf':CSRF_TOKEN,'settings':SETTINGS.view(),'ai':AI_LEAGUE.overview(),
                     'operations':OPS.overview(),'snapshots':LEAGUE.overview()['snapshots'],'backups':BACKUPS.list(),
-                    'connectors':[OPS.last('connector_config',p) for p in ('kis','stooq')],'legacy_kis_file_present':CREDS_PATH.exists()})
+                    'connectors':[OPS.last('connector_config',p) for p in PROVIDERS],'legacy_kis_file_present':CREDS_PATH.exists()})
             if parsed.path=='/api/app/backup/download':
                 name=(params.get('name') or [''])[0]
                 if not re.fullmatch(r'backup-[0-9T]+Z-[a-f0-9]{8}\.zip',name):raise ValueError('백업 이름을 확인하세요.')

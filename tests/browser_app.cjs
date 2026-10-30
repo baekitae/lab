@@ -60,6 +60,13 @@ const {chromium}=require('playwright'),fs=require('node:fs');
  await page.getByRole('button',{name:'긴급 중지',exact:true}).click();await page.getByText('긴급 중지했습니다. 현재 처리 중인 한 요청의 응답은 도착할 수 있습니다.',{exact:true}).waitFor();
  state=await page.evaluate(()=>fetch('/api/app/state').then(r=>r.json()));if(!state.operations.emergency.enabled)throw Error('Emergency state not persisted');
  await page.getByRole('button',{name:'원인 확인 후 중지 해제',exact:true}).click();await page.getByText('중지를 해제했습니다. 자동 회의·연결 설정을 다시 확인하세요.',{exact:true}).waitFor();
+ await page.getByRole('button',{name:'② 시장 데이터',exact:true}).click();await page.locator('#connectorProvider').selectOption('yahoo');
+ if(await page.locator('#connectorBasis').inputValue()!=='split-adjusted'||!await page.locator('#connectorBasis').isDisabled())throw Error('Yahoo basis not fixed');
+ await page.locator('#connectorTerms').check();await page.locator('#enableConnector').click();await page.waitForFunction(()=>document.getElementById('message').textContent.startsWith('공급원을 활성화했습니다.'));
+ await page.locator('#fetchConnector').click();await page.waitForFunction(()=>document.getElementById('message').textContent.startsWith('공급원 데이터 저장: yahoo'));
+ state=await page.evaluate(()=>fetch('/api/app/state').then(r=>r.json()));if(!state.operations.feeds.some(f=>f.provider==='yahoo'&&f.price_basis==='split-adjusted'))throw Error('Yahoo feed not preserved');
+ await page.locator('#disableConnector').click();await page.waitForFunction(()=>document.getElementById('message').textContent.startsWith('이 공급원의 자동 수집을 중지했습니다.'));
+ state=await page.evaluate(()=>fetch('/api/app/state').then(r=>r.json()));if(state.connectors.find(c=>c&&c.provider==='yahoo').enabled)throw Error('Yahoo connector not disabled');
  await page.setViewportSize({width:390,height:844});
  for(const name of ['① API 연결 설정','② 시장 데이터','③ 모의거래·성적표','원장·기존 데이터','승강 심사','백업·복구']){
   await page.getByRole('button',{name,exact:true}).click();if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Mobile overflow: '+name);
