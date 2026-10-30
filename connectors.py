@@ -1,7 +1,33 @@
 """Read-only market connectors. User confirms source terms and adjustment policy."""
-import csv,io,re,urllib.parse,urllib.request
+import csv,io,re,math,urllib.parse,urllib.request,urllib.error
 from datetime import datetime,timezone
 from trading_calendar import latest_closed
+
+def parse_stooq_csv(raw,content_type=''):
+    if len(raw)>3_000_000:raise ValueError('Stooq 시세 파일 크기가 허용 한도를 초과했습니다.')
+    try:text=raw.decode('utf-8-sig').strip()
+    except UnicodeError:raise ValueError('Stooq 응답이 UTF-8 CSV 형식이 아닙니다.') from None
+    if not text or text.lower()=='no data':raise ValueError('Stooq에서 해당 종목의 데이터가 없다는 응답을 받았습니다. 종목을 확인하거나 다른 공급원의 CSV를 사용하세요.')
+    if 'text/html' in content_type.lower() or re.match(r'(?is)^<(?:!doctype|html|head|body)',text):
+        if re.search(r'(?i)javascript|verify your browser|captcha',text):
+            raise ValueError('Stooq가 시세 CSV 대신 브라우저 확인 화면을 반환했습니다. 자동 다운로드가 제한된 상태입니다. API 키나 가격 기준의 문제가 아닙니다. 브라우저에서 정상적으로 내려받은 CSV가 있으면 오른쪽 CSV 가져오기를 사용하세요. 한국투자 데이터는 유지됩니다.')
+        raise ValueError('Stooq가 시세 CSV 대신 웹페이지를 반환했습니다. 접속 제한 또는 제공처 상태를 확인하세요. 받은 내용을 주가로 저장하지 않았습니다.')
+    reader=csv.DictReader(io.StringIO(text));fields=reader.fieldnames or []
+    names={name.strip().lower():name for name in fields}
+    required=('date','open','high','low','close')
+    if not all(k in names for k in required):raise ValueError('Stooq 응답에 날짜·시가·고가·저가·종가 열이 없습니다. 정상적인 일봉 CSV 파일이 필요합니다.')
+    rows=[]
+    try:
+        for r in reader:
+            day=r[names['date']].strip()
+            if datetime.strptime(day,'%Y-%m-%d').strftime('%Y-%m-%d')!=day:raise ValueError()
+            row={'date':day,**{k:float(r[names[k]]) for k in required[1:]}}
+            if any(not math.isfinite(row[k]) or row[k]<=0 for k in required[1:]):raise ValueError()
+            if row['low']>min(row['open'],row['close']) or row['high']<max(row['open'],row['close']):raise ValueError()
+            rows.append(row)
+    except (ValueError,TypeError,KeyError,AttributeError):raise ValueError('Stooq CSV에 올바르지 않은 날짜 또는 가격이 있습니다. 해당 응답은 시세로 저장하지 않았습니다.') from None
+    if not rows:raise ValueError('Stooq CSV에 가격 행이 없습니다. 해당 종목의 데이터를 확인하세요.')
+    return rows
 
 class MarketConnectors:
     def __init__(self,ops,kis_history):self.ops=ops;self.kis_history=kis_history
@@ -34,13 +60,14 @@ class MarketConnectors:
             url='https://stooq.com/q/d/l/?'+urllib.parse.urlencode({'s':symbol.lower()+'.us','i':'d'})
             req=urllib.request.Request(url,headers={'User-Agent':'PatternLabResearch/2.0'})
             try:
-                with urllib.request.urlopen(req,timeout=30) as response:raw=response.read(3_000_001)
-                if len(raw)>3_000_000:raise ValueError('시세 파일 크기 한도 초과입니다.')
-                text=raw.decode('utf-8-sig');rows=[]
-                for r in csv.DictReader(io.StringIO(text)):
-                    rows.append({'date':r['Date'],**{k:float(r[k.title()]) for k in ('open','high','low','close')}})
-            except (KeyError,UnicodeError,ValueError):raise ValueError('공급원이 유효한 OHLC CSV를 반환하지 않았습니다. 이용 조건·종목·제한을 확인하세요.') from None
-            except Exception:raise ValueError('Stooq 시세 연결에 실패했습니다. 네트워크·공급원 상태를 확인하세요.') from None
+                with urllib.request.urlopen(req,timeout=30) as response:
+                    raw=response.read(3_000_001);content_type=response.headers.get('Content-Type','')
+            except urllib.error.HTTPError as exc:
+                code=exc.code;exc.close()
+                if code in (403,429):raise ValueError(f'Stooq가 자동 조회를 거부하거나 호출을 제한했습니다 (HTTP {code}). 반복 갱신을 멈추고 제공처 이용 조건을 확인하세요. 한국투자 데이터는 유지됩니다.') from None
+                raise ValueError(f'Stooq 서버가 HTTP {code} 오류를 반환했습니다. 잠시 후 제공처 상태를 확인하세요.') from None
+            except (urllib.error.URLError,TimeoutError,OSError):raise ValueError('Stooq에 연결하지 못했습니다. 인터넷·학교망·공급원 상태를 확인하세요.') from None
+            rows=parse_stooq_csv(raw,content_type)
             self.ops.preserve(provider+'-'+symbol+'-'+cutoff+'.csv',raw,'utf-8-sig')
         rows=[r for r in rows if r['date']<=cutoff]
         snap=self.ops.league.import_snapshot({'symbol':symbol,'source':provider,'synthetic':False,'price_basis':config['price_basis'],'rows':rows})
