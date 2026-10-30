@@ -34,7 +34,7 @@ const {chromium}=require('playwright'),fs=require('node:fs');
   await page.locator('#feedA').selectOption(feeds[0].id);await page.locator('#feedB').selectOption(feeds[1].id);
   await page.getByRole('button',{name:'최신 시세 정합성 검증',exact:true}).click();await page.getByText('출처 확인·가격 정합성 정책을 통과했습니다.',{exact:true}).waitFor();return feeds;
  }
- await addFeed('TEST_VENDOR_A',fixture.market_csv,'2026-10-26T21:00');await addFeed('TEST_VENDOR_B',fixture.market_csv,'2026-10-26T21:00');const base=await compareLatest();
+ await addFeed('TEST_VENDOR_A',fixture.market_csv,'2026-10-26T21:00');if(!await page.locator('#compare').isDisabled())throw Error('Single-source comparison should be disabled');if(await page.locator('#feedB').inputValue())throw Error('Same provider offered as second source');await addFeed('TEST_VENDOR_B',fixture.market_csv,'2026-10-26T21:00');const base=await compareLatest();
  await page.goto('http://127.0.0.1:18772/ai');await page.waitForFunction(()=>document.getElementById('snapshot')?.options.length>0);await page.locator('#snapshot').selectOption(base[0].snapshot_id);
  await page.getByRole('button',{name:'Gemini 회의 시작',exact:true}).click();await page.getByText('12/12 단계',{exact:true}).waitFor({timeout:15000});
  await page.goto('http://127.0.0.1:18772/app');await page.getByRole('button',{name:'③ 모의거래·성적표',exact:true}).click();await page.locator('#conditionsChecked').check();
