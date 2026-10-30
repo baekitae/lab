@@ -75,6 +75,28 @@ class GeminiAdapter:
         code, message = mapping.get(status, ('provider_failure', f'Gemini 서비스 오류 (HTTP {status}).'))
         return ProviderError(code, message, retryable=status == 429)
 
+    def detailed_error(self,status,raw):
+        error=self.map_error(status)
+        # Classify only known indicators. Never return provider text, metadata or keys.
+        try:
+            data=json.loads(raw);body=data.get('error',{})
+            message=body.get('message','')
+            if not isinstance(message,str):message=''
+            details=body.get('details',[])
+            reasons={d.get('reason') for d in details if isinstance(d,dict)} if isinstance(details,list) else set()
+        except (ValueError,TypeError,AttributeError):return error
+        rules=[
+            ('api_key_invalid',bool(reasons&{'API_KEY_INVALID','API_KEY_EXPIRED'}) or bool(re.search(r'(?i)api.?key.*(?:not valid|invalid|expired)',message)),'Google가 이 역할의 API 키를 유효하지 않거나 만료된 키로 판단했습니다. 다른 역할의 키는 유지하고 해당 키의 상태·API 제한을 확인하세요.'),
+            ('region_unsupported','FAILED_PRECONDITION'==body.get('status') and bool(re.search(r'(?i)location|region|country',message)),'현재 접속 지역에서 Gemini 요청을 허용하지 않았습니다. Google의 제공 지역과 프로젝트 정책을 확인하세요.'),
+            ('thinking_unsupported',bool(re.search(r'(?i)thinking[_ ]?(?:config|level|budget)',message)),'선택한 모델이 요청의 thinking 설정을 거부했습니다. 모델 ID와 모델별 thinking 지원을 확인해야 합니다.'),
+            ('schema_unsupported',bool(re.search(r'(?i)response[_ ]?(?:schema|jsonschema|mime[_ ]?type)|(?:generation_config|generationConfig).*schema',message)),'선택한 모델이 구조화 JSON 스키마 설정을 거부했습니다. 해당 모델의 구조화 출력 지원과 요청 스키마를 확인해야 합니다.'),
+            ('temperature_unsupported',bool(re.search(r'(?i)temperature',message)),'선택한 모델이 temperature 설정을 거부했습니다. 모델별 생성 옵션 호환성 수정이 필요합니다.'),
+        ]
+        if status==400:
+            for code,matched,explanation in rules:
+                if matched:return ProviderError(code,explanation+' (HTTP 400 · 모델 '+self.model+')')
+        return ProviderError(error.code,str(error)+' (HTTP '+str(status)+' · 모델 '+self.model+')',error.retryable)
+
     def _request(self, path, payload=None):
         headers = {'x-goog-api-key': self._key, 'Content-Type': 'application/json'}
         body = json.dumps(payload, ensure_ascii=False, allow_nan=False).encode() if payload is not None else None
@@ -86,10 +108,12 @@ class GeminiAdapter:
                 raise ProviderError('response_too_large', 'Gemini 응답 크기 한도를 초과했습니다.')
             return json.loads(raw)
         except urllib.error.HTTPError as exc:
-            # Error bodies may echo credentials or request content; never expose them.
+            # Inspect a bounded body for known categories only; discard the original.
             code = exc.code
-            exc.close()
-            raise self.map_error(code) from None
+            try:raw=exc.read(65537)
+            except OSError:raw=b''
+            finally:exc.close()
+            raise self.detailed_error(code,raw if len(raw)<=65536 else b'') from None
         except (urllib.error.URLError, TimeoutError, socket.timeout):
             raise ProviderError('network_uncertain', 'Gemini 연결이 끊겼습니다. 중복 과금 방지를 위해 자동 재전송하지 않습니다.') from None
         except (ValueError, UnicodeError):

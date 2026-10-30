@@ -620,7 +620,7 @@ class Handler(BaseHTTPRequestHandler):
         params = urllib.parse.parse_qs(parsed.query)
         try:
             if parsed.path == '/api/app/state':
-                return self.send_json(200,{'release':'2.0.0','build':'2026-10-31.1','csrf':CSRF_TOKEN,'settings':SETTINGS.view(),'ai':AI_LEAGUE.overview(),
+                return self.send_json(200,{'release':'2.0.0','build':'2026-10-31.2','csrf':CSRF_TOKEN,'settings':SETTINGS.view(),'ai':AI_LEAGUE.overview(),
                     'operations':OPS.overview(),'snapshots':LEAGUE.overview()['snapshots'],'backups':BACKUPS.list(),
                     'connectors':[OPS.last('connector_config',p) for p in PROVIDERS],'legacy_kis_file_present':CREDS_PATH.exists()})
             if parsed.path=='/api/app/backup/download':
