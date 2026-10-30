@@ -11,6 +11,7 @@ import re
 import threading
 from pathlib import Path
 from providers import valid_model
+from data_paths import application_data
 
 ROLES = ('TEAM_A','TEAM_B','TEAM_C','TEAM_D','MANAGER_EVAL','RED','DIRECTOR','AUDIT_AI')
 SECRET_ROLES=ROLES+('KIS_APPKEY','KIS_APPSECRET')
@@ -172,7 +173,7 @@ class Settings:
                     'storage':'cloud-encrypted' if isinstance(self.codec,CloudVault) else 'windows-dpapi' if self.codec else 'session-memory',
                     'market_credentials':{r:bool(env.get(f'PL_{r}_API_KEY')) for r in ('KIS_APPKEY','KIS_APPSECRET')},
                     'persistent_keys':bool(self.codec),
-                    'note':'서버의 암호화 저장소에 저장됩니다. 학교와 집에서 같은 웹 주소로 접속하면 같은 설정을 사용합니다.' if isinstance(self.codec,CloudVault) else 'Windows 사용자 계정으로 암호화하여 저장됩니다.' if self.codec else '이 OS에서는 입력한 키를 메모리에만 보관합니다. 서버 종료 후 다시 입력하거나 환경의 보안 값을 사용하세요.'}
+                    'note':'서버의 암호화 저장소에 저장됩니다. 학교와 집에서 같은 웹 주소로 접속하면 같은 설정을 사용합니다.' if isinstance(self.codec,CloudVault) else 'Windows 사용자 전용 저장소에 암호화해 보관합니다. 같은 Windows 계정에서는 재실행·프로그램 업데이트 후에도 등록된 키를 사용합니다.' if self.codec else '이 OS에서는 입력한 키를 메모리에만 보관합니다. 서버 종료 후 다시 입력하거나 환경의 보안 값을 사용하세요.'}
 
 
-SETTINGS=Settings(Path(os.environ.get('PL_DATA_DIR') or Path(__file__).resolve().parent/'data'))
+SETTINGS=Settings(application_data(Path(__file__).resolve().parent))

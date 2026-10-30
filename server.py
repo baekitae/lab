@@ -18,7 +18,7 @@ from web_config import WebConfig
 
 WEB=WebConfig()
 ROOT = Path(__file__).resolve().parent
-DATA_DIR = Path(os.environ.get('PL_DATA_DIR') or ROOT / 'data')
+DATA_DIR = SETTINGS.root
 DATA_DIR.mkdir(parents=True,exist_ok=True)
 CREDS_PATH = ROOT / 'kis_credentials.json'
 HOST, PORT = ('0.0.0.0',int(os.environ.get('PORT','8770'))) if WEB.enabled else ('127.0.0.1',8770)

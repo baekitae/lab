@@ -19,3 +19,6 @@ data/credentials.fernet
 # Runtime data never belongs in source control.
 data/*
 !data/.keep
+
+code_backups/
+.pattern-update-*
